@@ -4,6 +4,12 @@ public abstract class Entity
 {
     public string Name { get; set; }
     public string Description { get; set; }
+
+    public Entity(string name, string description)
+    {
+        Name = name;
+        Description = description;
+    }
     
     public static (List<T>, List<T>) MoveObjectBetweenList<T>(List<T> listToMoveFrom, List<T> listToMoveTo, T objToMove)
     {
