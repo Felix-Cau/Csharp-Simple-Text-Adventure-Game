@@ -25,20 +25,30 @@ public static class FileHandler
 
     public static void SaveObjectToFile<T>(T obj)
     {
-        var objectAsJsonString = JsonSerializer.Serialize(obj);
+        _temporaryObjectAsJson = JsonSerializer.Serialize(obj);
 
         using (StreamWriter writer = new StreamWriter(_filePath, true))
         {
-            writer.WriteLine(objectAsJsonString);
+            writer.WriteLine(_temporaryObjectAsJson);
         }
+        _temporaryObjectAsJson = string.Empty;
     }
 
-    public static void RemoveObjectFromList<T>(T obj)
+    public static void RemoveObjectFromFile<T>(T obj)
     {
         _temporaryObjectAsJson = JsonSerializer.Serialize(obj);
         
         var jsonStringLines = File.ReadAllLines(_filePath).ToList();
         jsonStringLines.RemoveAll(line => line.Equals(_temporaryObjectAsJson));
         File.WriteAllLines(_filePath, jsonStringLines);
+        
+        _temporaryObjectAsJson = string.Empty;
+    }
+
+    public static (List<T>, List<T>) MoveObjectBetweenList<T>(List<T> listToMoveFrom, List<T> listToMoveTo, T objToMove)
+    {
+        listToMoveFrom.RemoveAll(item => listToMoveFrom.Contains(item));
+        listToMoveTo.Add(objToMove);
+        return (listToMoveFrom, listToMoveTo);
     }
 }
