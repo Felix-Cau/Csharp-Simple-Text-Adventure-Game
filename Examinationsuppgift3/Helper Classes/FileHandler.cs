@@ -8,7 +8,7 @@ public static class FileHandler
     
     private static string _temporaryObjectAsJson = string.Empty;
 
-    public static List<T> ReadFile(T obj)
+    public static List<T> ReadObjectsInFile<T>(T obj)
     {
         List<T> items = new();
         using (StreamReader reader = new StreamReader(_filePath))
@@ -20,9 +20,10 @@ public static class FileHandler
                 items.Add(item);
             }
         }
+        return items;
     }
 
-    public static void SaveToFile(T obj)
+    public static void SaveObjectToFile<T>(T obj)
     {
         string objectAsJsonString = JsonSerializer.Serialize(obj);
 
@@ -33,9 +34,12 @@ public static class FileHandler
         
     }
 
-    public static T ModifyList(T obj)
+    public static void RemoveObjectFromList<T>(T obj)
     {
-        IEnumerable<string> jsonStringLines = File.ReadAllLines(_filePath);
+        _temporaryObjectAsJson = JsonSerializer.Serialize(obj);
         
+        List<string> jsonStringLines = File.ReadAllLines(_filePath).ToList();
+        jsonStringLines.RemoveAll(line => line.Equals(_temporaryObjectAsJson));
+        File.WriteAllLines(_filePath, jsonStringLines);
     }
 }
