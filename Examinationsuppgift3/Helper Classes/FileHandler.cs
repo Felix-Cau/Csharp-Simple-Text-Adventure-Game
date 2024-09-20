@@ -8,7 +8,7 @@ public static class FileHandler
     
     private static string _temporaryObjectAsJson = string.Empty;
 
-    public static List<T> ReadObjectsInFile<T>(T obj)
+    public static List<T> ReadObjectsInFile<T>()
     {
         List<T> items = new();
         using (StreamReader reader = new StreamReader(_filePath))
@@ -31,7 +31,6 @@ public static class FileHandler
         {
             writer.WriteLine(objectAsJsonString);
         }
-        
     }
 
     public static void RemoveObjectFromList<T>(T obj)
