@@ -4,7 +4,7 @@ public static class UserInputHandler
 {
     public static string[] AskForUserInput()
     {
-        Console.WriteLine("What do you do now?");
+        Console.WriteLine(Static_Messages.AskUserForNextAction);
         var userInput = Console.ReadLine().Trim().ToLower().Split(" ");
         return userInput;
     }

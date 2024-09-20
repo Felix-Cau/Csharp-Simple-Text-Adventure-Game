@@ -2,8 +2,8 @@ namespace Examinationsuppgift3.Classes;
 
 public abstract class Entity
 {
-    string Name { get; set; }
-    string Description { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
     
     public static (List<T>, List<T>) MoveObjectBetweenList<T>(List<T> listToMoveFrom, List<T> listToMoveTo, T objToMove)
     {
