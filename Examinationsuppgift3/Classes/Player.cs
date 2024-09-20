@@ -7,8 +7,8 @@ public class Player : Entity
     List<Item> ItemsOnThePlayer { get; set; }
     string[] ActionStatus { get; set; }
 
-    public void SetActionStatus()
+    public void SetActionStatus(string[] userInput)
     {
-        throw new NotImplementedException();
+        ActionStatus = userInput;
     }
 }
