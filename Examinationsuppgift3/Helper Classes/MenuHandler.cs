@@ -11,21 +11,27 @@ public static class MenuHandler
         "1. New game",
         "2. Exit game"
     };
-    public static void DisplayMainMenu()
+    public static void DisplayMainMenu(Player player)
     {
         Console.Clear();
+        Console.WriteLine($"Welcome {player.Name}!");
         foreach (string line in MainMenu)
         {
             Console.WriteLine(line);
         } 
     }
 
-    public static Player CreatePlayer(Player player)
+    public static Player CreatePlayer()
     {
+        var name = string.Empty;
+        var description = string.Empty;
+        
         Console.WriteLine("Please enter the name of your carachter: ");
-        player.Name = Console.ReadLine().Trim();
+        name = Console.ReadLine().Trim();
         Console.WriteLine("Please enter a short desciption of you carachter: ");
-        player.Description = Console.ReadLine().Trim();        
+        description = Console.ReadLine().Trim();        
+        
+        Player player = new Player(name, description);
         
         return player;
     }

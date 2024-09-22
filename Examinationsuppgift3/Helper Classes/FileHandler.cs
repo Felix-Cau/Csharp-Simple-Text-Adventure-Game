@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Examinationsuppgift3.Classes;
 
 namespace Examinationsuppgift3.Helper_Classes;
 
@@ -7,7 +8,9 @@ public static class FileHandler
     private const string _filePath = @"c:/dev/Skola/CsharpKurs1/DbFiles/GameDb.json";
     
     private static string _temporaryObjectAsJson = string.Empty;
-
+    
+    public static List<Entity> UnfilteredEntities = ReadObjectsInFile<Entity>().ToList();
+    
     public static List<T> ReadObjectsInFile<T>()
     {
         var items = new List<T>();

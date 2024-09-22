@@ -4,15 +4,14 @@ namespace Examinationsuppgift3.Classes;
 
 public class Player : Entity
 {
-    private List<Item> ItemsOnThePlayer { get; set; }
+    public List<Item> ItemsOnThePlayer { get; private set; } = FileHandler.UnfilteredEntities.OfType<Item>()
+                                                                .Where(x => x.Room.Name == "onPlayer").ToList();
     private string[] ActionStatus { get; set; }
 
-    public Player(string name, string description,List<Item> itemsOnThePlayer, string[] actionStatus) : base(name, description)
+    public Player(string name, string description) : base(name, description)
     {
         Name = name;
         Description = description;
-        ItemsOnThePlayer = itemsOnThePlayer;
-        ActionStatus = actionStatus;
     }
 
     public void SetActionStatus(string[] userInput)
@@ -20,6 +19,10 @@ public class Player : Entity
         ActionStatus = userInput;
     }
 
+    public void LoadItemsOnThePlayer()
+    {
+        
+    }
     public List<Item> GetItemsOnThePlayer()
     {
         return ItemsOnThePlayer;
