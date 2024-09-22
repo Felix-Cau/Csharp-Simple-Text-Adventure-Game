@@ -18,6 +18,7 @@ while (keepGameGoing)
         switch (userInput)
         {
             case "1":
+                var startRoom = FileHandler.UnfilteredEntities.FirstOrDefault(x => x.Name == "Bar");
                 Console.Clear();
                 Console.WriteLine(Static_Messages.WelcomeAndStart);
                 Console.WriteLine(Static_Messages.AskUserForNextAction);

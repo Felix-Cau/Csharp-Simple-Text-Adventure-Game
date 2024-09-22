@@ -6,7 +6,7 @@ public class Player : Entity
 {
     public List<Item> ItemsOnThePlayer { get; private set; } = FileHandler.UnfilteredEntities.OfType<Item>()
                                                                 .Where(x => x.Room.Name == "onPlayer").ToList();
-    private string[] ActionStatus { get; set; }
+    public string ActionStatus { get; private set; }
 
     public Player(string name, string description) : base(name, description)
     {
@@ -14,7 +14,7 @@ public class Player : Entity
         Description = description;
     }
 
-    public void SetActionStatus(string[] userInput)
+    public void SetActionStatus(string userInput)
     {
         ActionStatus = userInput;
     }
