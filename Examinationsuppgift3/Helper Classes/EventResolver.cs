@@ -10,7 +10,8 @@ public class EventResolver
 
         if (player.ActionStatus == "use")
         {
-            
+            if (player.ItemsOnThePlayer.Contains(userInputAsArray[3], StringComparison.CurrentCultureIgnoreCase) ||
+                room.Name.ItemsInRoom.Contains(userInputAsArray[3], StringComparison.CurrentCultureIgnoreCase))
         }
         else if (player.ActionStatus == "get")
         {
@@ -74,10 +75,10 @@ public class EventResolver
         }
     }
     
-    private (bool, string itemName) CheckForTargetItem(string[] userInputAsArray)
+    private (bool, string itemName) CheckForTargetItem<T>(string[] userInputAsArray) where T : class
     {
-        var targetItem = FileHandler.UnfilteredEntities.OfType<Item>()
-            .FirstOrDefault(item => item.Name == userInputAsArray[3]);
+        T targetItem = FileHandler.UnfilteredEntities.OfType<T>()
+            .FirstOrDefault(x => (x as dynamic).Name == userInputAsArray[3]);
         
         if (targetItem == null)
         {
@@ -85,7 +86,7 @@ public class EventResolver
         }
         else
         {
-            return (true, targetItem.Name);
+            return (true, (targetItem as dynamic).Name);
         }
     }
 }
