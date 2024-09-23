@@ -7,6 +7,8 @@ public class Player : Entity
     public List<Item> ItemsOnThePlayer { get; private set; } = FileHandler.UnfilteredEntities.OfType<Item>()
                                                                 .Where(x => x.Room.Name == "onPlayer").ToList();
     public string ActionStatus { get; private set; }
+    
+    public Room CurrentRoom { get; private set; } = FileHandler.UnfilteredEntities.OfType<Room>().FirstOrDefault(x => x.Name == "Bar");
 
     public Player(string name, string description) : base(name, description)
     {

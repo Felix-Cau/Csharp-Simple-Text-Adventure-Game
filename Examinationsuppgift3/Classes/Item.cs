@@ -16,4 +16,11 @@ public class Item : Entity
         IsMovable = isMovable;
         Room = room;
     }
+
+    public Item(string name, string description, Room room) : base(name, description)
+    {
+        Name = name;
+        Description = description;
+        Room = room;
+    }
 }

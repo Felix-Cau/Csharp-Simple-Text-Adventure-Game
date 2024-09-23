@@ -4,9 +4,34 @@ namespace Examinationsuppgift3.Helper_Classes;
 
 public class EventResolver
 {
-    public void ResolveEvents(Player player, Room room, string[] userInputAsArray)
+    public Player ResolveEvents(Player player, Room room, string[] userInputAsArray)
     {
         player = CheckForActionKeywords(player, userInputAsArray);
+
+        if (player.ActionStatus == "use")
+        {
+            
+        }
+        else if (player.ActionStatus == "get")
+        {
+            
+        }
+        else if (player.ActionStatus == "drop")
+        {
+            
+        }
+        else if (player.ActionStatus == "inspect")
+        {
+            
+        }
+        else if (player.ActionStatus == "move")
+        {
+            
+        }
+        else
+        {
+            Console.WriteLine($"{player.ActionStatus}");
+        }
     }
 
     private Player CheckForActionKeywords(Player player, string[] userInputAsArray)
@@ -51,22 +76,16 @@ public class EventResolver
     
     private (bool, string itemName) CheckForTargetItem(string[] userInputAsArray)
     {
-        // var itemConnectedToAction = 
-        List<Item> targetItem = new();
-
-        for (int i = 2; i < userInputAsArray.Length; i++)
-        {
-            targetItem.Add(FileHandler.UnfilteredEntities.OfType<Item>().FirstOrDefault(item => item.Name == userInputAsArray[i]));
-        }
-            
-
+        var targetItem = FileHandler.UnfilteredEntities.OfType<Item>()
+            .FirstOrDefault(item => item.Name == userInputAsArray[3]);
+        
         if (targetItem == null)
         {
             return (false, "Item does not exist.");
         }
         else
         {
-            return (true, itemConnectedToAction.Name);
+            return (true, targetItem.Name);
         }
     }
 }
