@@ -47,4 +47,22 @@ public static class FileHandler
         
         _temporaryObjectAsJson = string.Empty;
     }
+
+    public static void OverwriteObjectFromFileAndChangeObjectDetails<T>(T obj, string entityName)
+    {
+        var inputObjectAsJsonString = JsonSerializer.Serialize(obj);
+        _temporaryObjectAsJson = FindObjectJsonStringInDbFile(entityName);
+        
+        string fileContent = File.ReadAllText(_filePath);
+        fileContent = fileContent.Replace(_temporaryObjectAsJson, entityName);
+        File.WriteAllText(_filePath, fileContent);
+
+        _temporaryObjectAsJson = string.Empty;
+    }
+
+    public static string FindObjectJsonStringInDbFile(string input)
+    {
+        var itemToOverwriteAsJsonString = JsonSerializer.Serialize(UnfilteredEntities.FirstOrDefault(x => x.Name.Equals(input)));
+        return itemToOverwriteAsJsonString;
+    }
 }

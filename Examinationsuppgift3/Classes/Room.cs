@@ -17,9 +17,9 @@ public class Room : Entity
         Description = description;
     }
 
-    public static List<Item> SearchForAllItemsInRoomBasedOnRoomName(string roomName)
-    {
-        return FileHandler.UnfilteredEntities.OfType<Item>()
-            .Where(item => item.Room.Name.ToLower() == roomName.ToLower()).ToList();
-    }
+    // public static List<Item> SearchForAllItemsInRoomBasedOnRoomName(string roomName)
+    // {
+    //     return FileHandler.UnfilteredEntities.OfType<Item>()
+    //         .Where(item => item.Room.Name.ToLower() == roomName.ToLower()).ToList();
+    // }
 }

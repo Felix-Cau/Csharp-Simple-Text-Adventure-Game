@@ -25,22 +25,36 @@ public class EventResolver
                 else
                 {
                     var targetItemObject = FileHandler.UnfilteredEntities.FirstOrDefault(x => x.Name == targetItemName);
-                    if (itemName == "key" && targetItemObject is Door door)
+                    if (itemName.ToLower() == "key" && targetItemObject is Door door)
                     {
                         door.UnlockDoor();
                         player.ChangeCurrentRoom(door.Name);
                         return player;
                     }
-                    else if ()
+                    else if (itemName.ToLower() == "key" && targetItemObject is not Door doorItem)
                     {
-                        
+                        Console.WriteLine("The target item you tried to use a key on is not a door.");
                     }
-                    
+                    else
+                    {
+                        Console.WriteLine($"There is no way to interact with {itemName} on {targetItemName}");
+                    }
                 }
             }
         }
         else if (player.ActionStatus == "get")
         {
+            (bool doesItemExist, string itemName) = CheckForItemConnectedToAction(userInputAsArray);
+            if (!doesItemExist)
+            {
+                Console.WriteLine("Error, the item you tried to get doesn't exist.");
+            }
+            else
+            {
+                var item = FileHandler.UnfilteredEntities.FirstOrDefault(x => x.Name == itemName);
+                FileHandler.OverwriteObjectFromFileAndChangeObjectDetails(item, item.Name);
+                    //måste fixa redigering av dbFilen
+            }
             
         }
         else if (player.ActionStatus == "drop")
@@ -97,7 +111,7 @@ public class EventResolver
         }
         else
         {
-            return (true, itemConnectedToAction.Name.ToLower());
+            return (true, itemConnectedToAction.Name);
         }
     }
     
@@ -112,7 +126,7 @@ public class EventResolver
         }
         else
         {
-            return (true, (targetItem as dynamic).Name.ToLower());
+            return (true, (targetItem as dynamic).Name);
         }
     }
 }
