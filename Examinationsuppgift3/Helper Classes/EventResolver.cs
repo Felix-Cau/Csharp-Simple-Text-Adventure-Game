@@ -31,7 +31,7 @@ public class EventResolver
                         player.ChangeCurrentRoom(door.Name);
                         return player;
                     }
-                    else if (itemName.ToLower() == "key" && targetItemObject is not Door doorItem)
+                    else if (itemName.ToLower() == "key" && targetItemObject is not Door aDoor)
                     {
                         Console.WriteLine("The target item you tried to use a key on is not a door.");
                     }
@@ -53,7 +53,7 @@ public class EventResolver
             {
                 var item = FileHandler.UnfilteredEntities.FirstOrDefault(x => x.Name == itemName);
                 FileHandler.OverwriteObjectFromFileAndChangeObjectDetails(item, item.Name);
-                    //måste fixa redigering av dbFilen
+                Console.WriteLine("You got it now.");
             }
             
         }
