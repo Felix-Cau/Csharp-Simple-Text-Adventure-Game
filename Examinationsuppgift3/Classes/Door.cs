@@ -9,5 +9,10 @@ public class Door : Item
 
     bool IsLocked { get; set; }
     public Room ConnectedRoom { get; private set; }
-    public Item KeyIten { get; private set; }
+    public Item KeyItem { get; private set; }
+
+    public void UnlockDoor()
+    {
+        IsLocked = false;
+    }
 }

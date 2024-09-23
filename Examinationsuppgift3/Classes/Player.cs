@@ -29,4 +29,9 @@ public class Player : Entity
     {
         return ItemsOnThePlayer;
     }
+
+    public void ChangeCurrentRoom(string newRoomName)
+    {
+        CurrentRoom = FileHandler.UnfilteredEntities.OfType<Room>().FirstOrDefault(x => x.Name == newRoomName);
+    }
 }

@@ -10,8 +10,34 @@ public class EventResolver
 
         if (player.ActionStatus == "use")
         {
-            if (player.ItemsOnThePlayer.Contains(userInputAsArray[3], StringComparison.CurrentCultureIgnoreCase) ||
-                room.Name.ItemsInRoom.Contains(userInputAsArray[3], StringComparison.CurrentCultureIgnoreCase))
+            (bool doesItemExist, string itemName) = CheckForItemConnectedToAction(userInputAsArray);
+            if (!doesItemExist)
+            {
+                Console.WriteLine("Error, the item you tried to use doesn't exist.");
+            }
+            else
+            {
+                (bool doesTargetItemExist, string targetItemName) = CheckForTargetItem<Item>(userInputAsArray);
+                if (!doesTargetItemExist)
+                {
+                    Console.WriteLine("Error, the target item you tried to use doesn't exist.");
+                }
+                else
+                {
+                    var targetItemObject = FileHandler.UnfilteredEntities.FirstOrDefault(x => x.Name == targetItemName);
+                    if (itemName == "key" && targetItemObject is Door door)
+                    {
+                        door.UnlockDoor();
+                        player.ChangeCurrentRoom(door.Name);
+                        return player;
+                    }
+                    else if ()
+                    {
+                        
+                    }
+                    
+                }
+            }
         }
         else if (player.ActionStatus == "get")
         {
@@ -71,7 +97,7 @@ public class EventResolver
         }
         else
         {
-            return (true, itemConnectedToAction.Name);
+            return (true, itemConnectedToAction.Name.ToLower());
         }
     }
     
@@ -86,7 +112,7 @@ public class EventResolver
         }
         else
         {
-            return (true, (targetItem as dynamic).Name);
+            return (true, (targetItem as dynamic).Name.ToLower());
         }
     }
 }

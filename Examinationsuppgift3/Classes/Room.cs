@@ -7,12 +7,19 @@ public class Room : Entity
 {
     public static List<Room> Rooms { get; private set; } = FileHandler.UnfilteredEntities.OfType<Room>().ToList();
 
-    public static List<Item> ItemsInRoom { get; private set; } =
-        FileHandler.UnfilteredEntities.OfType<Item>().OrderBy(item => item.Room.Name).ToList();
+    // public static List<Item> ItemsInRoom { get; private set; } 
+        // =
+        // FileHandler.UnfilteredEntities.OfType<Item>().OrderBy(item => item.Room.Name).ToList();
     
     public Room(string name, string description) : base(name, description)
     {
         Name = name;
         Description = description;
+    }
+
+    public static List<Item> SearchForAllItemsInRoomBasedOnRoomName(string roomName)
+    {
+        return FileHandler.UnfilteredEntities.OfType<Item>()
+            .Where(item => item.Room.Name.ToLower() == roomName.ToLower()).ToList();
     }
 }
