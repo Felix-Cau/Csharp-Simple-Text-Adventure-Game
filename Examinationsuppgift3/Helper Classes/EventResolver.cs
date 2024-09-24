@@ -4,10 +4,12 @@ namespace Examinationsuppgift3.Helper_Classes;
 
 public class EventResolver
 {
-    public Player ResolveEvents(Player player, Room room, string[] userInputAsArray)
+    public Player ResolveEvents(Player player, string[] userInputAsArray)
     {
         player = CheckForActionKeywords(player, userInputAsArray);
+        var room = Room.Rooms.Where(room => room.Name == player.CurrentRoom.Name).SingleOrDefault();
 
+        // FileHandler.UnfilteredEntities.OfType<Room>()
         if (player.ActionStatus == "use")
         {
             (bool doesItemExist, string itemName) = CheckForItemConnectedToAction(userInputAsArray);
@@ -24,7 +26,7 @@ public class EventResolver
                 }
                 else
                 {
-                    var targetItemObject = FileHandler.UnfilteredEntities.FirstOrDefault(x => x.Name == targetItemName);
+                    var targetItemObject = FileHandler.UnfilteredEntities.OfType<Door>().Where(door => door.Name.ToLower() == targetItemName).SingleOrDefault();
                     if (itemName.ToLower() == "key" && targetItemObject is Door door)
                     {
                         door.UnlockDoor();
@@ -49,18 +51,29 @@ public class EventResolver
             {
                 Console.WriteLine("Error, the item you tried to get doesn't exist.");
             }
-            else if (player.CurrentRoom == room)
-            {
-                var itemToUpdate = FileHandler.UnfilteredEntities.OfType<Item>().FirstOrDefault(x => x.Name == itemName);
-                itemToUpdate.Room.Name = "OnPerson";
-                FileHandler.OverwriteObjectFromFileAndChangeObjectDetails(itemToUpdate, itemToUpdate.Name);
-                Console.WriteLine("You got it now.");
-            }
+            // else if (player.CurrentRoom == room)
             else
             {
-                Console.WriteLine("There is no way to interact with that object as it isn" +
-                                  "t in your room.");
+                room.SearchAllItemsInRoomBasedOnRoomName(player.CurrentRoom.Name);
+                    // FileHandler.UnfilteredEntities.OfType<Item>().FirstOrDefault(x => x.Name == itemName);
+                var itemToUpdate = room.ItemsInRoom.FirstOrDefault(x => x.Name == itemName);
+                
+                if (itemToUpdate is not null)
+                {
+                    itemToUpdate.Room.Name = "OnPerson";
+                    FileHandler.OverwriteObjectFromFileAndChangeObjectDetails(itemToUpdate, itemToUpdate.Name);
+                    Console.WriteLine("You got it on your person now.");
+                }
+                else
+                {
+                    Console.WriteLine($"There is no way to interact with {itemName} in {player.CurrentRoom.Name}");
+                }
             }
+            // else
+            // {
+            //     Console.WriteLine("There is no way to interact with that object as it isn" +
+            //                       "t in your room.");
+            // }
         }
         else if (player.ActionStatus == "drop")
         {
@@ -84,6 +97,14 @@ public class EventResolver
                 }
             }
         }
+        else if (player.ActionStatus == "search")
+        {
+            Console.WriteLine("The items in this room are:");
+            foreach (var item in room.ItemsInRoom)
+            {
+                Console.WriteLine($"{item.Name}");
+            }
+        }
         else if (player.ActionStatus == "inspect")
         {
             (bool doesItemExist, string itemName) = CheckForItemConnectedToAction(userInputAsArray);
@@ -91,11 +112,21 @@ public class EventResolver
             
             if (!doesItemExist)
             {
-                Console.WriteLine("Error, the item you tried to inspect doesn't exist.");
+                (bool doesRoomExist, string roomName) = CheckForTargetRoom(userInputAsArray);
+                var roomToInspect = Room.Rooms.FirstOrDefault(room => room.Name == roomName);
+                if (doesRoomExist && roomToInspect is not null)
+                {
+                    Console.WriteLine("You inspect the room:\n");
+                    Console.WriteLine(roomToInspect.Description);
+                }
+                else
+                {
+                    Console.WriteLine($"{roomName}");
+                }
             }
             else if (itemToInspect is not null)
             {
-                Console.WriteLine("You inspect the item.\n");
+                Console.WriteLine("You inspect it:\n");
                 Console.WriteLine(itemToInspect.Description);
             }
             else
@@ -105,7 +136,7 @@ public class EventResolver
         }
         else if (player.ActionStatus == "move")
         {
-            
+            //Kolla upp linked-lists grejen Viktor skickade.
         }
         else
         {
@@ -126,6 +157,9 @@ public class EventResolver
             case "drop":
                 player.SetActionStatus("drop");
                 break;
+            case "search":
+                player.SetActionStatus("search");
+                break;
             case "inspect":
                 player.SetActionStatus("inspect");
                 break;
@@ -141,7 +175,7 @@ public class EventResolver
 
     private (bool, string itemName) CheckForItemConnectedToAction(string[] userInputAsArray)
     {
-        var itemConnectedToAction = FileHandler.UnfilteredEntities.OfType<Item>().FirstOrDefault(item => item.Name == userInputAsArray[1]);
+        var itemConnectedToAction = FileHandler.UnfilteredEntities.OfType<Item>().FirstOrDefault(item => item.Name.ToLower() == userInputAsArray[1]);
 
         if (itemConnectedToAction == null)
         {
@@ -155,7 +189,7 @@ public class EventResolver
     
     private (bool, string itemName) CheckForTargetItem(string[] userInputAsArray)
     {
-        var targetItem = FileHandler.UnfilteredEntities.OfType<Item>().FirstOrDefault(item => item.Name == userInputAsArray[3]);
+        var targetItem = FileHandler.UnfilteredEntities.OfType<Item>().FirstOrDefault(item => item.Name.ToLower() == userInputAsArray[3]);
         
         if (targetItem == null)
         {
@@ -164,6 +198,19 @@ public class EventResolver
         else
         {
             return (true, (targetItem as dynamic).Name);
+        }
+    }
+
+    private (bool, string roomName) CheckForTargetRoom(string[] userInputAsArray)
+    {
+        var targetRoom = FileHandler.UnfilteredEntities.OfType<Room>().FirstOrDefault(room => room.Name.ToLower() == userInputAsArray[1]);
+        if (targetRoom == null)
+        {
+            return (false, "Room does not exist.");
+        }
+        else
+        {
+            return (true, targetRoom.Name);
         }
     }
 }

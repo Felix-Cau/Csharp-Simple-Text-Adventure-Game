@@ -6,22 +6,16 @@ namespace Examinationsuppgift3.Classes;
 
 public class Room : Entity, ISavable, ILoadable
 {
-    public List<Room> Rooms { get; private set; } = FileHandler.UnfilteredEntities.OfType<Room>().ToList();
+    public static List<Room> Rooms { get; private set; } = FileHandler.UnfilteredEntities.OfType<Room>().ToList();
 
-    public List<Item> ItemsInRoom { get; private set; } = SearchForAllItemsInRoomBasedOnRoomName("Bar");
+    public List<Item> ItemsInRoom { get; private set; } = SetAllItemsInRoomBasedOnRoomNameOnStartup("Bar");
     
     public Room(string name, string description) : base(name, description)
     {
         Name = name;
         Description = description;
     }
-
-    public void SaveObjectToFile(Entity room)
-    {
-        FileHandler.SaveObjectToFile(room);
-    }
-
-    public static List<Item> SearchForAllItemsInRoomBasedOnRoomName(string roomName)
+    private static List<Item> SetAllItemsInRoomBasedOnRoomNameOnStartup(string roomName)
     {
         var localItemList = FileHandler.UnfilteredEntities.OfType<Item>().Where(item => item.Room.Name == roomName).ToList();
         
@@ -31,6 +25,15 @@ public class Room : Entity, ISavable, ILoadable
             //                     select entity as Item).ToList();
             
         return localItemList;
+    }
+    public void SearchAllItemsInRoomBasedOnRoomName(string roomName)
+    {
+        var localItemList = FileHandler.UnfilteredEntities.OfType<Item>().Where(item => item.Room.Name == roomName).ToList();
+        ItemsInRoom = localItemList;
+    }
+    public void SaveObjectToFile(Entity room)
+    {
+        FileHandler.SaveObjectToFile(room);
     }
     public void LoadObject()
     {
