@@ -5,7 +5,7 @@ namespace Examinationsuppgift3.Classes;
 
 public class Item : Entity, ISavable, ILoadable
 {
-    private bool IsMovable { get; set; }
+    public bool IsMovable { get; private set; }
     public Room Room { get; private set; }
     
     public static List<Item> Items { get; set; } = FileHandler.UnfilteredEntities.OfType<Item>().ToList();

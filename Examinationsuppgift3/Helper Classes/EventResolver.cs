@@ -51,29 +51,28 @@ public class EventResolver
             {
                 Console.WriteLine("Error, the item you tried to get doesn't exist.");
             }
-            // else if (player.CurrentRoom == room)
             else
             {
                 room.SearchAllItemsInRoomBasedOnRoomName(player.CurrentRoom.Name);
                     // FileHandler.UnfilteredEntities.OfType<Item>().FirstOrDefault(x => x.Name == itemName);
                 var itemToUpdate = room.ItemsInRoom.FirstOrDefault(x => x.Name == itemName);
-                
-                if (itemToUpdate is not null)
+
+                if (itemToUpdate is not null && itemToUpdate.IsMovable)
                 {
                     itemToUpdate.Room.Name = "OnPerson";
                     FileHandler.OverwriteObjectFromFileAndChangeObjectDetails(itemToUpdate, itemToUpdate.Name);
                     Console.WriteLine("You got it on your person now.");
                 }
+                else if (!itemToUpdate.IsMovable)
+                {
+                    Console.WriteLine($"{itemToUpdate.Name} is not movable.");
+                }
                 else
                 {
                     Console.WriteLine($"There is no way to interact with {itemName} in {player.CurrentRoom.Name}");
+
                 }
             }
-            // else
-            // {
-            //     Console.WriteLine("There is no way to interact with that object as it isn" +
-            //                       "t in your room.");
-            // }
         }
         else if (player.ActionStatus == "drop")
         {
@@ -137,6 +136,21 @@ public class EventResolver
         else if (player.ActionStatus == "move")
         {
             //Kolla upp linked-lists grejen Viktor skickade.
+            var directionToMove = DirectionWord(userInputAsArray);
+            if (door.IsLocked)
+            {
+                Console.WriteLine("The door is locked. Use a key to unlock the door.");
+            }
+            else
+            {
+                (bool doorExist, string roomName) = CheckForTargetRoom(userInputAsArray);
+                var targetRoom = Room.Rooms.FirstOrDefault(room => room.Name == roomName);
+                
+                if (doorExist && !door.IsLocked)
+                {
+                    player.ChangeCurrentRoom(targetRoom.Name);
+                }
+            }
         }
         else
         {
@@ -197,13 +211,13 @@ public class EventResolver
         }
         else
         {
-            return (true, (targetItem as dynamic).Name);
+            return (true, targetItem.Name);
         }
     }
 
     private (bool, string roomName) CheckForTargetRoom(string[] userInputAsArray)
     {
-        var targetRoom = FileHandler.UnfilteredEntities.OfType<Room>().FirstOrDefault(room => room.Name.ToLower() == userInputAsArray[1]);
+        var targetRoom = FileHandler.UnfilteredEntities.OfType<Room>().FirstOrDefault(room => room.Name.ToLower() == userInputAsArray[1] || room.Name.ToLower() == userInputAsArray[2] || room.Name.ToLower() == userInputAsArray[3]);
         if (targetRoom == null)
         {
             return (false, "Room does not exist.");
@@ -211,6 +225,28 @@ public class EventResolver
         else
         {
             return (true, targetRoom.Name);
+        }
+    }
+
+    private string DirectionWord(string[] userInputAsArray)
+    {
+        var userInputDirection = userInputAsArray[1];
+        switch (userInputDirection)
+        {
+            case "to":
+                return "to";
+                break;
+            case "back":
+                if (userInputAsArray[2] == "to")
+                {
+                    return "back to";
+                }
+                else
+                {
+                    return "back";
+                }
+            default:
+                return "Not a valid direction.";
         }
     }
 }

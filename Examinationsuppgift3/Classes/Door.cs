@@ -13,7 +13,7 @@ public class Door : Item, ISavable, ILoadable
 
     bool IsLocked { get; set; }
     public List<Room> ConnectedRoom { get; private set; }
-    public List<Door> AllDoors { get; private set; } = FileHandler.UnfilteredEntities.OfType<Door>().ToList();
+    public static List<Door> AllDoors { get; private set; } = FileHandler.UnfilteredEntities.OfType<Door>().ToList();
 
     public void UnlockDoor()
     {

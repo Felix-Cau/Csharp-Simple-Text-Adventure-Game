@@ -6,7 +6,7 @@ namespace Examinationsuppgift3.Classes;
 public class Player : Entity, ISavable, ILoadable
 {
     public List<Item> ItemsOnThePlayer { get; private set; } = FileHandler.UnfilteredEntities.OfType<Item>()
-                                                                .Where(x => x.Room.Name == "onPlayer").ToList();
+                                                                .Where(x => x.Room.Name == "OnPlayer").ToList();
     public string ActionStatus { get; private set; }
     
     public Room CurrentRoom { get; private set; } = FileHandler.UnfilteredEntities.OfType<Room>().FirstOrDefault(x => x.Name == "Bar");
@@ -21,11 +21,7 @@ public class Player : Entity, ISavable, ILoadable
     {
         ActionStatus = userInput;
     }
-
-    public void LoadItemsOnThePlayer()
-    {
-        
-    }
+    
     public List<Item> GetItemsOnThePlayer()
     {
         return ItemsOnThePlayer;
@@ -43,7 +39,7 @@ public class Player : Entity, ISavable, ILoadable
 
     public void LoadObject()
     {
-        var localListOfItemsOnPlayer = FileHandler.ReadObjectsInFile().OfType<Item>().Where(x => x.Room.Name == "onPlayer").ToList().ToList();
+        var localListOfItemsOnPlayer = FileHandler.ReadObjectsInFile().OfType<Item>().Where(x => x.Room.Name == "OnPlayer").ToList().ToList();
         
          ItemsOnThePlayer = localListOfItemsOnPlayer;
     }
