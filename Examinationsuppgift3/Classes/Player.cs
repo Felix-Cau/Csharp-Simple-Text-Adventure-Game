@@ -36,15 +36,15 @@ public class Player : Entity, ISavable, ILoadable
         CurrentRoom = FileHandler.UnfilteredEntities.OfType<Room>().FirstOrDefault(x => x.Name == newRoomName);
     }
 
-    public void SaveObjectToFile<Player>(Player player)
+    public void SaveObjectToFile(Entity player)
     {
         FileHandler.SaveObjectToFile(player);
     }
 
-    public List<Player> LoadObject<Player>() where Player : class
+    public void LoadObject()
     {
-        var localListOfPlayers = FileHandler.ReadObjectsInFile<Entity>().OfType<Player>().ToList();
+        var localListOfItemsOnPlayer = FileHandler.ReadObjectsInFile().OfType<Item>().Where(x => x.Room.Name == "onPlayer").ToList().ToList();
         
-        return localListOfPlayers;
+         ItemsOnThePlayer = localListOfItemsOnPlayer;
     }
 }

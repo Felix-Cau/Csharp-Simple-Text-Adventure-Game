@@ -12,24 +12,24 @@ public static class FileHandler
     private static StreamWriter _writer;
     private static StreamReader _reader;
     
-    public static List<Entity> UnfilteredEntities = ReadObjectsInFile<Entity>().ToList();
+    public static List<Entity> UnfilteredEntities = ReadObjectsInFile().ToList();
     
-    public static List<T> ReadObjectsInFile<T>()
+    public static List<Entity> ReadObjectsInFile()
     {
-        var items = new List<T>();
+        var items = new List<Entity>();
         using (_reader = new StreamReader(_filePath))
         {
             while (!_reader.EndOfStream)
             {
                 var objectAsString = _reader.ReadLine();
-                T item = JsonSerializer.Deserialize<T>(objectAsString);
+                Entity item = JsonSerializer.Deserialize<Entity>(objectAsString);
                 items.Add(item);
             }
         }
         return items;
     }
 
-    public static void SaveObjectToFile<T>(T obj)
+    public static void SaveObjectToFile(Entity obj)
     {
         _temporaryObjectAsJson = JsonSerializer.Serialize(obj);
 
@@ -40,10 +40,10 @@ public static class FileHandler
         _temporaryObjectAsJson = string.Empty;
         
         //Uppdaterar UnfilteredEntities-listan.
-        UnfilteredEntities = ReadObjectsInFile<Entity>().ToList();
+        UnfilteredEntities = ReadObjectsInFile().ToList();
     }
 
-    public static void RemoveObjectFromFile<T>(T obj)
+    public static void RemoveObjectFromFile(Entity obj)
     {
         _temporaryObjectAsJson = JsonSerializer.Serialize(obj);
         
@@ -54,10 +54,10 @@ public static class FileHandler
         _temporaryObjectAsJson = string.Empty;
         
         //Uppdaterar UnfilteredEntities-listan.
-        UnfilteredEntities = ReadObjectsInFile<Entity>().ToList();
+        UnfilteredEntities = ReadObjectsInFile().ToList();
     }
 
-    public static void OverwriteObjectFromFileAndChangeObjectDetails<T>(T obj, string entityName)
+    public static void OverwriteObjectFromFileAndChangeObjectDetails(Entity obj, string entityName)
     {
         var inputObjectAsJsonString = JsonSerializer.Serialize(obj);
         _temporaryObjectAsJson = FindObjectJsonStringInDbFile(entityName);
@@ -69,7 +69,7 @@ public static class FileHandler
         _temporaryObjectAsJson = string.Empty;
         
         //Uppdaterar UnfilteredEntities-listan.
-        UnfilteredEntities = ReadObjectsInFile<Entity>().ToList();
+        UnfilteredEntities = ReadObjectsInFile().ToList();
     }
 
     public static string FindObjectJsonStringInDbFile(string input)

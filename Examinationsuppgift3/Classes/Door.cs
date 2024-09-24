@@ -13,21 +13,22 @@ public class Door : Item, ISavable, ILoadable
     bool IsLocked { get; set; }
     public Room ConnectedRoom { get; private set; }
     public Item KeyItem { get; private set; }
+    public List<Door> AllDoors { get; private set; } = FileHandler.UnfilteredEntities.OfType<Door>().ToList();
 
     public void UnlockDoor()
     {
         IsLocked = false;
     }
 
-    public void SaveObjectToFile<Door>(Door obj)
+    public void SaveObjectToFile(Entity door)
     {
-        FileHandler.SaveObjectToFile(obj);
+        FileHandler.SaveObjectToFile(door);
     }
 
-    public List<Door> LoadObject<Door>() where Door : class
+    public void LoadObject()
     {
-        var localFilteredListToDoors = FileHandler.ReadObjectsInFile<Entity>().OfType<Door>().ToList();
+        var localFilteredListToDoors = FileHandler.ReadObjectsInFile().OfType<Door>().ToList();
         
-        return localFilteredListToDoors;
+        AllDoors = localFilteredListToDoors;
     }
 }

@@ -25,15 +25,15 @@ public class Item : Entity, ISavable, ILoadable
         Room = room;
     }
 
-    public void SaveObjectToFile<Item>(Item item)
+    public void SaveObjectToFile(Entity item)
     {
         FileHandler.SaveObjectToFile(item);
     }
 
-    public List<Item> LoadObject<Item>() where Item : class
+    public void LoadObject()
     {
-        var localFilteredListToItems = FileHandler.ReadObjectsInFile<Entity>().OfType<Item>().ToList();
+        var localFilteredListToItems = FileHandler.ReadObjectsInFile().OfType<Item>().ToList();
         
-        return localFilteredListToItems;
+        Items = localFilteredListToItems;
     }
 }
