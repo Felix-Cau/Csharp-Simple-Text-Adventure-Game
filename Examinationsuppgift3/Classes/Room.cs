@@ -26,7 +26,7 @@ public class Room : Entity, ISavable, ILoadable
             
         return localItemList;
     }
-    public void SearchAllItemsInRoomBasedOnRoomName(string roomName)
+    public void SearchAllItemsInRoomBasedOnRoomNameAndUpdateListOfItemsInRoom(string roomName)
     {
         var localItemList = FileHandler.UnfilteredEntities.OfType<Item>().Where(item => item.Room.Name == roomName).ToList();
         ItemsInRoom = localItemList;

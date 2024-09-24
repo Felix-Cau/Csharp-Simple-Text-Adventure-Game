@@ -9,7 +9,7 @@ while (keepGameGoing)
     Console.WriteLine(Static_Messages.BeforeWelcome);
     var player = MenuHandler.CreatePlayer();
     
-    bool keepGameLoopGoing = true;
+    bool keepMenuLoopGoing = true;
 
     do
     {
@@ -20,17 +20,25 @@ while (keepGameGoing)
             case "1":
                 Console.Clear();
                 Console.WriteLine(Static_Messages.WelcomeAndStart);
-                Console.WriteLine(Static_Messages.AskUserForNextAction);
-                var userInputAsArray = UserInputHandler.UserInputToArray();
                 
-                
+                bool keepGameLoopGoing = true;
+
+                while (keepGameLoopGoing)
+                {
+                    Console.WriteLine(Static_Messages.AskUserForNextAction);
+                    var userInputAsArray = UserInputHandler.UserInputToArray();
+                    (keepGameLoopGoing, player) = EventResolver.ResolveEvents(player, userInputAsArray);
+                }
                 break;
             case "2":
                 Console.WriteLine(Static_Messages.Goodbye);
-                keepGameLoopGoing = false;
+                keepMenuLoopGoing = false;
                 keepGameGoing = false;
                 break;
+            default:
+                Console.WriteLine("Invalid input. Try again.");
+                break;
         }
-    } while (keepGameLoopGoing);
+    } while (keepMenuLoopGoing);
 }
 

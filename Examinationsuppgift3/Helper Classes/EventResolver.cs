@@ -1,15 +1,16 @@
+using System.ComponentModel.Design;
 using Examinationsuppgift3.Classes;
 
 namespace Examinationsuppgift3.Helper_Classes;
 
-public class EventResolver
+public static class EventResolver
 {
-    public Player ResolveEvents(Player player, string[] userInputAsArray)
+    public static (bool, Player) ResolveEvents(Player player, string[] userInputAsArray)
     {
+        bool localKeepGameLoopGoing = true;
         player = CheckForActionKeywords(player, userInputAsArray);
         var room = Room.Rooms.Where(room => room.Name == player.CurrentRoom.Name).SingleOrDefault();
 
-        // FileHandler.UnfilteredEntities.OfType<Room>()
         if (player.ActionStatus == "use")
         {
             (bool doesItemExist, string itemName) = CheckForItemConnectedToAction(userInputAsArray);
@@ -29,6 +30,7 @@ public class EventResolver
                     var targetItemObject = FileHandler.UnfilteredEntities.OfType<Door>().Where(door => door.Name.ToLower() == targetItemName).SingleOrDefault();
                     if (itemName.ToLower() == "key" && targetItemObject is Door door)
                     {
+                        //Här måste någon snajdig grej in för att returnera door-status till listan med doors.
                         door.UnlockDoor();
                         player.ChangeCurrentRoom(door.Name);
                         return player;
@@ -53,7 +55,7 @@ public class EventResolver
             }
             else
             {
-                room.SearchAllItemsInRoomBasedOnRoomName(player.CurrentRoom.Name);
+                room.SearchAllItemsInRoomBasedOnRoomNameAndUpdateListOfItemsInRoom(player.CurrentRoom.Name);
                     // FileHandler.UnfilteredEntities.OfType<Item>().FirstOrDefault(x => x.Name == itemName);
                 var itemToUpdate = room.ItemsInRoom.FirstOrDefault(x => x.Name == itemName);
 
@@ -149,6 +151,18 @@ public class EventResolver
                 if (doorExist && !door.IsLocked)
                 {
                     player.ChangeCurrentRoom(targetRoom.Name);
+                    Console.WriteLine($"You have entered the next room. It's the {targetRoom.Name}.");
+                }
+                else if (targetRoom.Name == "DarkEndRoom")
+                {
+                    Console.WriteLine("You have entered the last room in this game.\n");
+                    Console.WriteLine(targetRoom.Description);
+                    localKeepGameLoopGoing = false;
+                }
+                else
+                {
+                    Console.WriteLine("The door you try to interact with doesn't exist.");
+
                 }
             }
         }
@@ -156,9 +170,10 @@ public class EventResolver
         {
             Console.WriteLine($"{player.ActionStatus}");
         }
+        return (localKeepGameLoopGoing, player);
     }
 
-    private Player CheckForActionKeywords(Player player, string[] userInputAsArray)
+    private static Player CheckForActionKeywords(Player player, string[] userInputAsArray)
     {
         switch (userInputAsArray[0])
         {
@@ -187,7 +202,7 @@ public class EventResolver
         return player;
     }
 
-    private (bool, string itemName) CheckForItemConnectedToAction(string[] userInputAsArray)
+    private static (bool, string itemName) CheckForItemConnectedToAction(string[] userInputAsArray)
     {
         var itemConnectedToAction = FileHandler.UnfilteredEntities.OfType<Item>().FirstOrDefault(item => item.Name.ToLower() == userInputAsArray[1]);
 
@@ -201,7 +216,7 @@ public class EventResolver
         }
     }
     
-    private (bool, string itemName) CheckForTargetItem(string[] userInputAsArray)
+    private static (bool, string itemName) CheckForTargetItem(string[] userInputAsArray)
     {
         var targetItem = FileHandler.UnfilteredEntities.OfType<Item>().FirstOrDefault(item => item.Name.ToLower() == userInputAsArray[3]);
         
@@ -215,9 +230,12 @@ public class EventResolver
         }
     }
 
-    private (bool, string roomName) CheckForTargetRoom(string[] userInputAsArray)
+    private static (bool, string roomName) CheckForTargetRoom(string[] userInputAsArray)
     {
-        var targetRoom = FileHandler.UnfilteredEntities.OfType<Room>().FirstOrDefault(room => room.Name.ToLower() == userInputAsArray[1] || room.Name.ToLower() == userInputAsArray[2] || room.Name.ToLower() == userInputAsArray[3]);
+        var targetRoom = FileHandler.UnfilteredEntities.OfType<Room>().FirstOrDefault(room => room.Name.ToLower() == userInputAsArray[1] || 
+                                                                                              room.Name.ToLower() == userInputAsArray[2] ||
+                                                                                              room.Name.ToLower() == userInputAsArray[3]);
+        
         if (targetRoom == null)
         {
             return (false, "Room does not exist.");
@@ -228,7 +246,7 @@ public class EventResolver
         }
     }
 
-    private string DirectionWord(string[] userInputAsArray)
+    private static string DirectionWord(string[] userInputAsArray)
     {
         var userInputDirection = userInputAsArray[1];
         switch (userInputDirection)
