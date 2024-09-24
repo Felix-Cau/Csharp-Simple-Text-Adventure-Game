@@ -1,9 +1,10 @@
 using System.Reflection.Emit;
 using Examinationsuppgift3.Helper_Classes;
+using Examinationsuppgift3.Interfaces;
 
 namespace Examinationsuppgift3.Classes;
 
-public class Room : Entity
+public class Room : Entity, ISavable
 {
     public static List<Room> Rooms { get; private set; } = FileHandler.UnfilteredEntities.OfType<Room>().ToList();
 
@@ -15,6 +16,11 @@ public class Room : Entity
     {
         Name = name;
         Description = description;
+    }
+
+    public void SaveObjectToFile<Room>(Room room)
+    {
+        FileHandler.SaveObjectToFile(room);
     }
 
     // public static List<Item> SearchForAllItemsInRoomBasedOnRoomName(string roomName)

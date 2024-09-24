@@ -1,8 +1,9 @@
 using Examinationsuppgift3.Helper_Classes;
+using Examinationsuppgift3.Interfaces;
 
 namespace Examinationsuppgift3.Classes;
 
-public class Item : Entity
+public class Item : Entity, ISavable
 {
     private bool IsMovable { get; set; }
     public Room Room { get; private set; }
@@ -22,5 +23,10 @@ public class Item : Entity
         Name = name;
         Description = description;
         Room = room;
+    }
+
+    public void SaveObjectToFile<Item>(Item item)
+    {
+        FileHandler.SaveObjectToFile(item);
     }
 }

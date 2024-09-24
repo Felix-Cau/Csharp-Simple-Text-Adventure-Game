@@ -1,8 +1,9 @@
 using Examinationsuppgift3.Helper_Classes;
+using Examinationsuppgift3.Interfaces;
 
 namespace Examinationsuppgift3.Classes;
 
-public class Player : Entity
+public class Player : Entity, ISavable
 {
     public List<Item> ItemsOnThePlayer { get; private set; } = FileHandler.UnfilteredEntities.OfType<Item>()
                                                                 .Where(x => x.Room.Name == "onPlayer").ToList();
@@ -33,5 +34,10 @@ public class Player : Entity
     public void ChangeCurrentRoom(string newRoomName)
     {
         CurrentRoom = FileHandler.UnfilteredEntities.OfType<Room>().FirstOrDefault(x => x.Name == newRoomName);
+    }
+
+    public void SaveObjectToFile<Player>(Player player)
+    {
+        FileHandler.SaveObjectToFile(player);
     }
 }
