@@ -3,7 +3,7 @@ using Examinationsuppgift3.Interfaces;
 
 namespace Examinationsuppgift3.Classes;
 
-public class Player : Entity, ISavable
+public class Player : Entity, ISavable, ILoadable
 {
     public List<Item> ItemsOnThePlayer { get; private set; } = FileHandler.UnfilteredEntities.OfType<Item>()
                                                                 .Where(x => x.Room.Name == "onPlayer").ToList();
@@ -39,5 +39,12 @@ public class Player : Entity, ISavable
     public void SaveObjectToFile<Player>(Player player)
     {
         FileHandler.SaveObjectToFile(player);
+    }
+
+    public List<Player> LoadObject<Player>() where Player : class
+    {
+        var localListOfPlayers = FileHandler.ReadObjectsInFile<Entity>().OfType<Player>().ToList();
+        
+        return localListOfPlayers;
     }
 }

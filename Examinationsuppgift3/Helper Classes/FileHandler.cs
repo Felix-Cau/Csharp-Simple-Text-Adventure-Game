@@ -8,17 +8,20 @@ public static class FileHandler
     private const string _filePath = @"c:/dev/Skola/CsharpKurs1/DbFiles/GameDb.json";
     
     private static string _temporaryObjectAsJson = string.Empty;
+
+    private static StreamWriter _writer;
+    private static StreamReader _reader;
     
     public static List<Entity> UnfilteredEntities = ReadObjectsInFile<Entity>().ToList();
     
     public static List<T> ReadObjectsInFile<T>()
     {
         var items = new List<T>();
-        using (StreamReader reader = new StreamReader(_filePath))
+        using (_reader = new StreamReader(_filePath))
         {
-            while (!reader.EndOfStream)
+            while (!_reader.EndOfStream)
             {
-                var objectAsString = reader.ReadLine();
+                var objectAsString = _reader.ReadLine();
                 T item = JsonSerializer.Deserialize<T>(objectAsString);
                 items.Add(item);
             }
@@ -30,11 +33,14 @@ public static class FileHandler
     {
         _temporaryObjectAsJson = JsonSerializer.Serialize(obj);
 
-        using (StreamWriter writer = new StreamWriter(_filePath, true))
+        using (_writer = new StreamWriter(_filePath, true))
         {
-            writer.WriteLine(_temporaryObjectAsJson);
+            _writer.WriteLine(_temporaryObjectAsJson);
         }
         _temporaryObjectAsJson = string.Empty;
+        
+        //Uppdaterar UnfilteredEntities-listan.
+        UnfilteredEntities = ReadObjectsInFile<Entity>().ToList();
     }
 
     public static void RemoveObjectFromFile<T>(T obj)
@@ -46,6 +52,9 @@ public static class FileHandler
         File.WriteAllLines(_filePath, jsonStringLines);
         
         _temporaryObjectAsJson = string.Empty;
+        
+        //Uppdaterar UnfilteredEntities-listan.
+        UnfilteredEntities = ReadObjectsInFile<Entity>().ToList();
     }
 
     public static void OverwriteObjectFromFileAndChangeObjectDetails<T>(T obj, string entityName)
@@ -58,6 +67,9 @@ public static class FileHandler
         File.WriteAllText(_filePath, fileContent);
 
         _temporaryObjectAsJson = string.Empty;
+        
+        //Uppdaterar UnfilteredEntities-listan.
+        UnfilteredEntities = ReadObjectsInFile<Entity>().ToList();
     }
 
     public static string FindObjectJsonStringInDbFile(string input)

@@ -3,7 +3,7 @@ using Examinationsuppgift3.Interfaces;
 
 namespace Examinationsuppgift3.Classes;
 
-public class Item : Entity, ISavable
+public class Item : Entity, ISavable, ILoadable
 {
     private bool IsMovable { get; set; }
     public Room Room { get; private set; }
@@ -28,5 +28,12 @@ public class Item : Entity, ISavable
     public void SaveObjectToFile<Item>(Item item)
     {
         FileHandler.SaveObjectToFile(item);
+    }
+
+    public List<Item> LoadObject<Item>() where Item : class
+    {
+        var localFilteredListToItems = FileHandler.ReadObjectsInFile<Entity>().OfType<Item>().ToList();
+        
+        return localFilteredListToItems;
     }
 }

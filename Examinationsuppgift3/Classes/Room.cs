@@ -4,7 +4,7 @@ using Examinationsuppgift3.Interfaces;
 
 namespace Examinationsuppgift3.Classes;
 
-public class Room : Entity, ISavable
+public class Room : Entity, ISavable, ILoadable
 {
     public static List<Room> Rooms { get; private set; } = FileHandler.UnfilteredEntities.OfType<Room>().ToList();
 
@@ -28,4 +28,10 @@ public class Room : Entity, ISavable
     //     return FileHandler.UnfilteredEntities.OfType<Item>()
     //         .Where(item => item.Room.Name.ToLower() == roomName.ToLower()).ToList();
     // }
+    public List<Room> LoadObject<Room>() where Room : class
+    {
+        var localListOfRooms = FileHandler.ReadObjectsInFile<Entity>().OfType<Room>().ToList();
+
+        return localListOfRooms;
+    }
 }
