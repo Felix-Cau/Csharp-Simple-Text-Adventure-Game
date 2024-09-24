@@ -17,7 +17,7 @@ public class EventResolver
             }
             else
             {
-                (bool doesTargetItemExist, string targetItemName) = CheckForTargetItem<Item>(userInputAsArray);
+                (bool doesTargetItemExist, string targetItemName) = CheckForTargetItem(userInputAsArray);
                 if (!doesTargetItemExist)
                 {
                     Console.WriteLine("Error, the target item you tried to use doesn't exist.");
@@ -31,7 +31,7 @@ public class EventResolver
                         player.ChangeCurrentRoom(door.Name);
                         return player;
                     }
-                    else if (itemName.ToLower() == "key" && targetItemObject is not Door aDoor)
+                    else if (itemName.ToLower() == "key" && targetItemObject is not Door)
                     {
                         Console.WriteLine("The target item you tried to use a key on is not a door.");
                     }
@@ -51,8 +51,9 @@ public class EventResolver
             }
             else
             {
-                var item = FileHandler.UnfilteredEntities.FirstOrDefault(x => x.Name == itemName);
-                FileHandler.OverwriteObjectFromFileAndChangeObjectDetails(item, item.Name);
+                var itemToUpdate = FileHandler.UnfilteredEntities.OfType<Item>().FirstOrDefault(x => x.Name == itemName);
+                itemToUpdate.Room.Name = "onPersson";
+                FileHandler.OverwriteObjectFromFileAndChangeObjectDetails(itemToUpdate, itemToUpdate.Name);
                 Console.WriteLine("You got it now.");
             }
             
@@ -115,10 +116,9 @@ public class EventResolver
         }
     }
     
-    private (bool, string itemName) CheckForTargetItem<T>(string[] userInputAsArray) where T : class
+    private (bool, string itemName) CheckForTargetItem(string[] userInputAsArray)
     {
-        T targetItem = FileHandler.UnfilteredEntities.OfType<T>()
-            .FirstOrDefault(x => (x as dynamic).Name == userInputAsArray[3]);
+        var targetItem = FileHandler.UnfilteredEntities.OfType<Item>().FirstOrDefault(item => item.Name == userInputAsArray[3]);
         
         if (targetItem == null)
         {

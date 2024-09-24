@@ -57,9 +57,9 @@ public static class FileHandler
         UnfilteredEntities = ReadObjectsInFile().ToList();
     }
 
-    public static void OverwriteObjectFromFileAndChangeObjectDetails(Entity obj, string entityName)
+    public static void OverwriteObjectFromFileAndChangeObjectDetails(Entity objToUpdate, string entityName)
     {
-        var inputObjectAsJsonString = JsonSerializer.Serialize(obj);
+        var inputObjectAsJsonString = JsonSerializer.Serialize(objToUpdate);
         _temporaryObjectAsJson = FindObjectJsonStringInDbFile(entityName);
         
         string fileContent = File.ReadAllText(_filePath);
