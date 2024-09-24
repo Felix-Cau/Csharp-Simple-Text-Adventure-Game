@@ -8,7 +8,7 @@ public class Room : Entity, ISavable, ILoadable
 {
     public List<Room> Rooms { get; private set; } = FileHandler.UnfilteredEntities.OfType<Room>().ToList();
 
-    public static List<Item> ItemsInRoom { get; private set; } = SearchForAllItemsInRoomBasedOnRoomName("Bar");
+    public List<Item> ItemsInRoom { get; private set; } = SearchForAllItemsInRoomBasedOnRoomName("Bar");
     
     public Room(string name, string description) : base(name, description)
     {

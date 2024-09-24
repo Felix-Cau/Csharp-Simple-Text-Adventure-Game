@@ -49,22 +49,59 @@ public class EventResolver
             {
                 Console.WriteLine("Error, the item you tried to get doesn't exist.");
             }
-            else
+            else if (player.CurrentRoom == room)
             {
                 var itemToUpdate = FileHandler.UnfilteredEntities.OfType<Item>().FirstOrDefault(x => x.Name == itemName);
-                itemToUpdate.Room.Name = "onPersson";
+                itemToUpdate.Room.Name = "OnPerson";
                 FileHandler.OverwriteObjectFromFileAndChangeObjectDetails(itemToUpdate, itemToUpdate.Name);
                 Console.WriteLine("You got it now.");
             }
-            
+            else
+            {
+                Console.WriteLine("There is no way to interact with that object as it isn" +
+                                  "t in your room.");
+            }
         }
         else if (player.ActionStatus == "drop")
         {
-            
+            (bool doesItemExist, string itemName) = CheckForItemConnectedToAction(userInputAsArray);
+            if (!doesItemExist)
+            {
+                Console.WriteLine("Error, the item you tried to drop doesn't exist.");
+            }
+            else
+            {
+                var itemToUpdate = player.ItemsOnThePlayer.FirstOrDefault(x => x.Name == itemName);
+                if (itemToUpdate is null)
+                {
+                    itemToUpdate.Room.Name = room.Name;
+                    FileHandler.OverwriteObjectFromFileAndChangeObjectDetails(itemToUpdate, itemToUpdate.Name);
+                    Console.WriteLine("You dropped the item.");
+                }
+                else
+                {
+                    Console.WriteLine("Something went wrong, you can't drop the item.");
+                }
+            }
         }
         else if (player.ActionStatus == "inspect")
         {
+            (bool doesItemExist, string itemName) = CheckForItemConnectedToAction(userInputAsArray);
+            var itemToInspect = room.ItemsInRoom.FirstOrDefault(x => x.Name == itemName);
             
+            if (!doesItemExist)
+            {
+                Console.WriteLine("Error, the item you tried to inspect doesn't exist.");
+            }
+            else if (itemToInspect is not null)
+            {
+                Console.WriteLine("You inspect the item.\n");
+                Console.WriteLine(itemToInspect.Description);
+            }
+            else
+            {
+                Console.WriteLine("The item you try to inspect doesn't exist.");
+            }
         }
         else if (player.ActionStatus == "move")
         {
