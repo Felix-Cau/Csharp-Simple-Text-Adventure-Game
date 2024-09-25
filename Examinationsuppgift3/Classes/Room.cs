@@ -6,26 +6,25 @@ namespace Examinationsuppgift3.Classes;
 
 public class Room : Entity
 {
-    public static List<Room> Rooms { get; private set; } = FileHandler.ReadObjectsInFile<Room>().OfType<Room>().ToList();
+    public static List<Room> Rooms { get; private set; } 
+        // = FileHandler.ReadObjectsInFile<Room>().OfType<Room>().ToList();
 
-    public List<Item> ItemsInRoom { get; private set; } = SetAllItemsInRoomBasedOnRoomNameOnStartup("Bar");
+    public List<Item> ItemsInRoom { get; private set; } 
+        // = SetAllItemsInRoomBasedOnRoomNameOnStartup("Bar");
     
     public Room(string name, string description) : base(name, description)
     {
-        Name = name;
-        Description = description;
     }
     
-    private static List<Item> SetAllItemsInRoomBasedOnRoomNameOnStartup(string roomName)
+    public void SetAllItemsInRoomOnStartup()
     {
-        var localItemList = FileHandler.ReadObjectsInFile<Item>().OfType<Item>().Where(item => item.Room.Name == roomName).ToList();
+        ItemsInRoom = FileHandler.ReadObjectsInFile<Item>().OfType<Item>().Where(item => item.Room.Name == "Bar").ToList();
         
             //alternativ med Query syntax.
             // (from entity in FileHandler.UnfilteredEntities
             //                 where entity is Item item && item.Room.Name == roomName
             //                     select entity as Item).ToList();
             
-        return localItemList;
     }
     
     public void SearchAllItemsInRoomBasedOnRoomNameAndUpdateListOfItemsInRoom(string roomName)

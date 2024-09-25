@@ -9,6 +9,8 @@ while (keepGameGoing)
 {
     Console.WriteLine(Static_Messages.BeforeWelcome);
     var player = MenuHandler.CreatePlayer();
+    player.SetCurrentRoomAtStartUp();
+    player.LoadItemsOnThePlayer();
     
     bool keepMenuLoopGoing = true;
 
@@ -23,18 +25,21 @@ while (keepGameGoing)
                 Console.WriteLine(Static_Messages.WelcomeAndStart);
                 
                 bool keepGameLoopGoing = true;
+                Room room = FileHandler.ReadObjectsInFile<Room>().OfType<Room>().Where(room => room.Name == "Bar").SingleOrDefault();
+                room.SetAllItemsInRoomOnStartup();
 
                 while (keepGameLoopGoing)
                 {
                     Console.WriteLine(Static_Messages.AskUserForNextAction);
                     var userInputAsArray = UserInputHandler.UserInputToArray();
-                    (keepGameLoopGoing, player) = EventResolver.ResolveEvents(player, userInputAsArray);
+                    (keepGameLoopGoing, player, room) = EventResolver.ResolveEvents(player, userInputAsArray);
                 }
                 break;
             case "2":
                 Console.WriteLine(Static_Messages.Goodbye);
                 keepMenuLoopGoing = false;
                 keepGameGoing = false;
+                Console.ReadKey();
                 break;
             default:
                 Console.WriteLine("Invalid input. Try again.");

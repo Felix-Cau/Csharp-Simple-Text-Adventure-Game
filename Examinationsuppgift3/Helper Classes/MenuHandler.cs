@@ -27,9 +27,9 @@ public static class MenuHandler
         var description = string.Empty;
         
         Console.WriteLine(Static_Messages.AskUserToNamePlayer);
-        name = Console.ReadLine().Trim();
+        name = Console.ReadLine();
         Console.WriteLine(Static_Messages.AskUserForShortPlayerDescription);
-        description = Console.ReadLine().Trim();        
+        description = Console.ReadLine();        
         
         Player player = new Player(name, description);
         

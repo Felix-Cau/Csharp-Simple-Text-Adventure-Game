@@ -15,4 +15,9 @@ public class Door : Item
     {
         IsLocked = false;
     }
+
+    public void LockDoor()
+    {
+        IsLocked = true;
+    }
 }

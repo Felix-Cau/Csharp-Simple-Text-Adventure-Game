@@ -10,8 +10,6 @@ public class Item : Entity
     
     public Item(string name, string description, bool isMovable, Room room) : base(name, description)
     {
-        Name = name;
-        Description = description;
         IsMovable = isMovable;
         Room = room;
     }

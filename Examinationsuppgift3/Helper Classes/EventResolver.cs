@@ -6,7 +6,7 @@ namespace Examinationsuppgift3.Helper_Classes;
 
 public static class EventResolver
 {
-    public static (bool, Player) ResolveEvents(Player player, string[] userInputAsArray)
+    public static (bool, Player, Room) ResolveEvents(Player player, string[] userInputAsArray)
     {
         bool localKeepGameLoopGoing = true;
         player = UserInputHandler.CheckForActionKeywords(player, userInputAsArray);
@@ -76,9 +76,18 @@ public static class EventResolver
                         var targetItemObject = FileHandler.ReadObjectsInFile<Door>().OfType<Door>().Where(door => door.Name.ToLower() == targetItemName).SingleOrDefault();
                         if (itemName.ToLower() == "key" && targetItemObject is Door door)
                         {
-                            //Här måste någon snajdig grej in för att returnera door-status till listan med doors.
-                            targetItemObject.UnlockDoor();
-                            FileHandler.SaveObjectToFile(targetItemObject);
+                            if (targetItemObject.IsLocked)
+                            {
+                                targetItemObject.UnlockDoor();
+                                FileHandler.OverwriteObjectFromFileAndChangeObjectDetails(targetItemObject, targetItemObject.Name);
+                                Console.WriteLine("You have unlocked the door.");
+                            }
+                            else if (!targetItemObject.IsLocked)
+                            {
+                                targetItemObject.LockDoor();
+                                FileHandler.OverwriteObjectFromFileAndChangeObjectDetails(targetItemObject, targetItemObject.Name);
+                                Console.WriteLine("You have locked the door.");
+                            }
                         }
                         else if (itemName.ToLower() == "key" && targetItemObject is not Door)
                         {
@@ -145,8 +154,9 @@ public static class EventResolver
         }
         else if (player.ActionStatus == "search")
         {
+            var localRoomAndItemList = FileHandler.ReadObjectsInFile<Item>().OfType<Item>().Where(item => item.Room.Name == player.CurrentRoom.Name).ToList();
             Console.WriteLine("The items in this room are:");
-            foreach (var item in room.ItemsInRoom)
+            foreach (var item in localRoomAndItemList)
             {
                 Console.WriteLine($"{item.Name}");
             }
@@ -154,6 +164,7 @@ public static class EventResolver
         else if (player.ActionStatus == "inspect")
         {
             (bool doesItemExist, string itemName) = Utilities.CheckForItemConnectedToAction(userInputAsArray);
+            room.SearchAllItemsInRoomBasedOnRoomNameAndUpdateListOfItemsInRoom(player.CurrentRoom.Name);
             var itemToInspect = room.ItemsInRoom.FirstOrDefault(x => x.Name == itemName);
             
             if (!doesItemExist)
@@ -167,7 +178,7 @@ public static class EventResolver
                 }
                 else
                 {
-                    Console.WriteLine($"{roomName}");
+                    Console.WriteLine("Something went wrong. Try to inspect again.");
                 }
             }
             else if (itemToInspect is not null)
@@ -184,6 +195,6 @@ public static class EventResolver
         {
             Console.WriteLine($"{player.ActionStatus}");
         }
-        return (localKeepGameLoopGoing, player);
+        return (localKeepGameLoopGoing, player, room);
     }
 }
