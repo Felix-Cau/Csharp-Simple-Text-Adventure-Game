@@ -4,9 +4,9 @@ using Examinationsuppgift3.Interfaces;
 
 namespace Examinationsuppgift3.Classes;
 
-public class Room : Entity, ISavable, ILoadable
+public class Room : Entity, ISavable
 {
-    public static List<Room> Rooms { get; private set; } = FileHandler.UnfilteredEntities.OfType<Room>().ToList();
+    public static List<Room> Rooms { get; private set; } = FileHandler.UnfilteredEntities<Room>().OfType<Room>().ToList();
 
     public List<Item> ItemsInRoom { get; private set; } = SetAllItemsInRoomBasedOnRoomNameOnStartup("Bar");
     
@@ -17,7 +17,7 @@ public class Room : Entity, ISavable, ILoadable
     }
     private static List<Item> SetAllItemsInRoomBasedOnRoomNameOnStartup(string roomName)
     {
-        var localItemList = FileHandler.UnfilteredEntities.OfType<Item>().Where(item => item.Room.Name == roomName).ToList();
+        var localItemList = FileHandler.UnfilteredEntities<Item>().OfType<Item>().Where(item => item.Room.Name == roomName).ToList();
         
             //alternativ med Query syntax.
             // (from entity in FileHandler.UnfilteredEntities
@@ -28,17 +28,11 @@ public class Room : Entity, ISavable, ILoadable
     }
     public void SearchAllItemsInRoomBasedOnRoomNameAndUpdateListOfItemsInRoom(string roomName)
     {
-        var localItemList = FileHandler.UnfilteredEntities.OfType<Item>().Where(item => item.Room.Name == roomName).ToList();
+        var localItemList = FileHandler.UnfilteredEntities<Item>().OfType<Item>().Where(item => item.Room.Name == roomName).ToList();
         ItemsInRoom = localItemList;
     }
-    public void SaveObjectToFile(Entity room)
+    public void SaveObjectToFile<T>(T room)
     {
         FileHandler.SaveObjectToFile(room);
-    }
-    public void LoadObject()
-    {
-        var localListOfRooms = FileHandler.ReadObjectsInFile().OfType<Room>().ToList();
-
-        Rooms = localListOfRooms;
     }
 }

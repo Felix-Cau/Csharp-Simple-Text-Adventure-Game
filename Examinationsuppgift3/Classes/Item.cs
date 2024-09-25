@@ -3,12 +3,12 @@ using Examinationsuppgift3.Interfaces;
 
 namespace Examinationsuppgift3.Classes;
 
-public class Item : Entity, ISavable, ILoadable
+public class Item : Entity, ISavable
 {
     public bool IsMovable { get; private set; }
     public Room Room { get; private set; }
     
-    public static List<Item> Items { get; set; } = FileHandler.UnfilteredEntities.OfType<Item>().ToList();
+    public static List<Item> Items { get; set; } = FileHandler.UnfilteredEntities<Item>().OfType<Item>().ToList();
 
     public Item(string name, string description, bool isMovable, Room room) : base(name, description)
     {
@@ -25,15 +25,8 @@ public class Item : Entity, ISavable, ILoadable
         Room = room;
     }
 
-    public void SaveObjectToFile(Entity item)
+    public void SaveObjectToFile<T>(T item)
     {
         FileHandler.SaveObjectToFile(item);
-    }
-
-    public void LoadObject()
-    {
-        var localFilteredListToItems = FileHandler.ReadObjectsInFile().OfType<Item>().ToList();
-        
-        Items = localFilteredListToItems;
     }
 }

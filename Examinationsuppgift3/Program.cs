@@ -1,4 +1,5 @@
 ﻿
+using System.Runtime;
 using Examinationsuppgift3.Classes;
 using Examinationsuppgift3.Helper_Classes;
 
@@ -41,4 +42,3 @@ while (keepGameGoing)
         }
     } while (keepMenuLoopGoing);
 }
-
