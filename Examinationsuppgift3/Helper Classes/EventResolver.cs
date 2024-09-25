@@ -8,19 +8,19 @@ public static class EventResolver
     public static (bool, Player) ResolveEvents(Player player, string[] userInputAsArray)
     {
         bool localKeepGameLoopGoing = true;
-        player = CheckForActionKeywords(player, userInputAsArray);
+        player = UserInputHandler.CheckForActionKeywords(player, userInputAsArray);
         var room = Room.Rooms.Where(room => room.Name == player.CurrentRoom.Name).SingleOrDefault();
 
         if (player.ActionStatus == "use")
         {
-            (bool doesItemExist, string itemName) = CheckForItemConnectedToAction(userInputAsArray);
+            (bool doesItemExist, string itemName) = Utilities.CheckForItemConnectedToAction(userInputAsArray);
             if (!doesItemExist)
             {
                 Console.WriteLine("Error, the item you tried to use doesn't exist.");
             }
             else
             {
-                (bool doesTargetItemExist, string targetItemName) = CheckForTargetItem(userInputAsArray);
+                (bool doesTargetItemExist, string targetItemName) = Utilities.CheckForTargetItem(userInputAsArray);
                 if (!doesTargetItemExist)
                 {
                     Console.WriteLine("Error, the target item you tried to use doesn't exist.");
@@ -48,7 +48,7 @@ public static class EventResolver
         }
         else if (player.ActionStatus == "get")
         {
-            (bool doesItemExist, string itemName) = CheckForItemConnectedToAction(userInputAsArray);
+            (bool doesItemExist, string itemName) = Utilities.CheckForItemConnectedToAction(userInputAsArray);
             if (!doesItemExist)
             {
                 Console.WriteLine("Error, the item you tried to get doesn't exist.");
@@ -61,7 +61,7 @@ public static class EventResolver
 
                 if (itemToUpdate is not null && itemToUpdate.IsMovable)
                 {
-                    itemToUpdate.Room.Name = "OnPerson";
+                    itemToUpdate.Room.Name = "On Person";
                     FileHandler.OverwriteObjectFromFileAndChangeObjectDetails(itemToUpdate, itemToUpdate.Name);
                     Console.WriteLine("You got it on your person now.");
                 }
@@ -78,7 +78,7 @@ public static class EventResolver
         }
         else if (player.ActionStatus == "drop")
         {
-            (bool doesItemExist, string itemName) = CheckForItemConnectedToAction(userInputAsArray);
+            (bool doesItemExist, string itemName) = Utilities.CheckForItemConnectedToAction(userInputAsArray);
             if (!doesItemExist)
             {
                 Console.WriteLine("Error, the item you tried to drop doesn't exist.");
@@ -108,12 +108,12 @@ public static class EventResolver
         }
         else if (player.ActionStatus == "inspect")
         {
-            (bool doesItemExist, string itemName) = CheckForItemConnectedToAction(userInputAsArray);
+            (bool doesItemExist, string itemName) = Utilities.CheckForItemConnectedToAction(userInputAsArray);
             var itemToInspect = room.ItemsInRoom.FirstOrDefault(x => x.Name == itemName);
             
             if (!doesItemExist)
             {
-                (bool doesRoomExist, string roomName) = CheckForTargetRoom(userInputAsArray);
+                (bool doesRoomExist, string roomName) = Utilities.CheckForTargetRoom(userInputAsArray);
                 var roomToInspect = Room.Rooms.FirstOrDefault(room => room.Name == roomName);
                 if (doesRoomExist && roomToInspect is not null)
                 {
@@ -138,14 +138,14 @@ public static class EventResolver
         else if (player.ActionStatus == "move")
         {
             //Kolla upp linked-lists grejen Viktor skickade.
-            var directionToMove = DirectionWord(userInputAsArray);
+            var directionToMove = UserInputHandler.DirectionWord(userInputAsArray);
             if (door.IsLocked)
             {
                 Console.WriteLine("The door is locked. Use a key to unlock the door.");
             }
             else
             {
-                (bool doorExist, string roomName) = CheckForTargetRoom(userInputAsArray);
+                (bool doorExist, string roomName) = Utilities.CheckForTargetRoom(userInputAsArray);
                 var targetRoom = Room.Rooms.FirstOrDefault(room => room.Name == roomName);
                 
                 if (doorExist && !door.IsLocked)
@@ -173,98 +173,6 @@ public static class EventResolver
         return (localKeepGameLoopGoing, player);
     }
 
-    private static Player CheckForActionKeywords(Player player, string[] userInputAsArray)
-    {
-        switch (userInputAsArray[0])
-        {
-            case "use":
-                player.SetActionStatus("use");
-                break;
-            case "get":
-                player.SetActionStatus("get");
-                break;
-            case "drop":
-                player.SetActionStatus("drop");
-                break;
-            case "search":
-                player.SetActionStatus("search");
-                break;
-            case "inspect":
-                player.SetActionStatus("inspect");
-                break;
-            case "move":
-                player.SetActionStatus("move");
-                break;
-            default:
-                player.SetActionStatus("Invalid command. Please try again.");
-                break;
-        }
-        return player;
-    }
-
-    private static (bool, string itemName) CheckForItemConnectedToAction(string[] userInputAsArray)
-    {
-        var itemConnectedToAction = FileHandler.ReadObjectsInFile<Item>().OfType<Item>().FirstOrDefault(item => item.Name.ToLower() == userInputAsArray[1]);
-
-        if (itemConnectedToAction == null)
-        {
-            return (false, "Item does not exist.");
-        }
-        else
-        {
-            return (true, itemConnectedToAction.Name);
-        }
-    }
     
-    private static (bool, string itemName) CheckForTargetItem(string[] userInputAsArray)
-    {
-        var targetItem = FileHandler.ReadObjectsInFile<Item>().OfType<Item>().FirstOrDefault(item => item.Name.ToLower() == userInputAsArray[3]);
-        
-        if (targetItem == null)
-        {
-            return (false, "Item does not exist.");
-        }
-        else
-        {
-            return (true, targetItem.Name);
-        }
-    }
 
-    private static (bool, string roomName) CheckForTargetRoom(string[] userInputAsArray)
-    {
-        var targetRoom = FileHandler.ReadObjectsInFile<Room>().OfType<Room>().FirstOrDefault(room => room.Name.ToLower() == userInputAsArray[1] || 
-                                                                                              room.Name.ToLower() == userInputAsArray[2] ||
-                                                                                              room.Name.ToLower() == userInputAsArray[3]);
-        
-        if (targetRoom == null)
-        {
-            return (false, "Room does not exist.");
-        }
-        else
-        {
-            return (true, targetRoom.Name);
-        }
-    }
-
-    private static string DirectionWord(string[] userInputAsArray)
-    {
-        var userInputDirection = userInputAsArray[1];
-        switch (userInputDirection)
-        {
-            case "to":
-                return "to";
-                break;
-            case "back":
-                if (userInputAsArray[2] == "to")
-                {
-                    return "back to";
-                }
-                else
-                {
-                    return "back";
-                }
-            default:
-                return "Not a valid direction.";
-        }
-    }
 }

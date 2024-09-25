@@ -1,9 +1,8 @@
 using Examinationsuppgift3.Helper_Classes;
-using Examinationsuppgift3.Interfaces;
 
 namespace Examinationsuppgift3.Classes;
 
-public class Door : Item, ISavable
+public class Door : Item
 {
     public Door(string name, string description, Room room, bool isLocked, List<Room> connectedRoom) : base(name, description, room)
     {
@@ -20,8 +19,5 @@ public class Door : Item, ISavable
         IsLocked = false;
     }
 
-    public void SaveObjectToFile(Entity door)
-    {
-        FileHandler.SaveObjectToFile(door);
-    }
+
 }

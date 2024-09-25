@@ -12,9 +12,6 @@ public static class FileHandler
     private static StreamWriter _writer;
     private static StreamReader _reader;
     
-    // public static List<Entity> UnfilteredEntities = ReadObjectsInFile().ToList();
-    // public static List<T> UnfilteredEntities<T>() => ReadObjectsInFile<T>();
-    
     public static List<T> ReadObjectsInFile<T>()
     {
         var items = new List<T>();
@@ -39,9 +36,6 @@ public static class FileHandler
             _writer.WriteLine(_temporaryObjectAsJson);
         }
         _temporaryObjectAsJson = string.Empty;
-        
-        // Uppdaterar UnfilteredEntities-listan.
-         // UnfilteredEntities = ReadObjectsInFile().ToList();
     }
     
     public static void RemoveObjectFromFile<T>(T obj)
@@ -53,9 +47,6 @@ public static class FileHandler
         File.WriteAllLines(_filePath, jsonStringLines);
         
         _temporaryObjectAsJson = string.Empty;
-        
-        //Uppdaterar UnfilteredEntities-listan.
-        // UnfilteredEntities = ReadObjectsInFile().ToList();
     }
 
     public static void OverwriteObjectFromFileAndChangeObjectDetails<T>(T objToUpdate, string entityName)
@@ -68,9 +59,6 @@ public static class FileHandler
         File.WriteAllText(_filePath, fileContent);
     
         _temporaryObjectAsJson = string.Empty;
-        
-        //Uppdaterar UnfilteredEntities-listan.
-        // UnfilteredEntities = ReadObjectsInFile<T>().ToList();
     }
 
     public static string FindObjectJsonStringInDbFile<T>(string inputObjectName)

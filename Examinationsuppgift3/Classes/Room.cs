@@ -1,10 +1,10 @@
 using System.Reflection.Emit;
 using Examinationsuppgift3.Helper_Classes;
-using Examinationsuppgift3.Interfaces;
+
 
 namespace Examinationsuppgift3.Classes;
 
-public class Room : Entity, ISavable
+public class Room : Entity
 {
     public static List<Room> Rooms { get; private set; } = FileHandler.ReadObjectsInFile<Room>().OfType<Room>().ToList();
 
@@ -30,9 +30,5 @@ public class Room : Entity, ISavable
     {
         var localItemList = FileHandler.ReadObjectsInFile<Item>().OfType<Item>().Where(item => item.Room.Name == roomName).ToList();
         ItemsInRoom = localItemList;
-    }
-    public void SaveObjectToFile<T>(T room)
-    {
-        FileHandler.SaveObjectToFile(room);
     }
 }

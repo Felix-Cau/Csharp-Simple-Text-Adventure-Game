@@ -1,12 +1,11 @@
 using Examinationsuppgift3.Helper_Classes;
-using Examinationsuppgift3.Interfaces;
 
 namespace Examinationsuppgift3.Classes;
 
-public class Player : Entity, ISavable
+public class Player : Entity
 {
     public List<Item> ItemsOnThePlayer { get; private set; } = FileHandler.ReadObjectsInFile<Item>().OfType<Item>()
-                                                                .Where(x => x.Room.Name == "OnPlayer").ToList();
+                                                                .Where(x => x.Room.Name == "On Person").ToList();
     public string ActionStatus { get; private set; }
     
     public Room CurrentRoom { get; private set; } = FileHandler.ReadObjectsInFile<Room>().OfType<Room>().FirstOrDefault(x => x.Name == "Bar");
@@ -30,10 +29,5 @@ public class Player : Entity, ISavable
     public void ChangeCurrentRoom(string newRoomName)
     {
         CurrentRoom = FileHandler.ReadObjectsInFile<Room>().OfType<Room>().FirstOrDefault(x => x.Name == newRoomName);
-    }
-
-    public void SaveObjectToFile<T>(T player)
-    {
-        FileHandler.SaveObjectToFile(player);
     }
 }
