@@ -13,7 +13,7 @@ public static class FileHandler
     private static StreamReader _reader;
     
     // public static List<Entity> UnfilteredEntities = ReadObjectsInFile().ToList();
-    public static List<T> UnfilteredEntities<T>() => ReadObjectsInFile<T>();
+    // public static List<T> UnfilteredEntities<T>() => ReadObjectsInFile<T>();
     
     public static List<T> ReadObjectsInFile<T>()
     {
@@ -70,12 +70,12 @@ public static class FileHandler
         _temporaryObjectAsJson = string.Empty;
         
         //Uppdaterar UnfilteredEntities-listan.
-        //UnfilteredEntities = ReadObjectsInFile().ToList();
+        // UnfilteredEntities = ReadObjectsInFile<T>().ToList();
     }
 
     public static string FindObjectJsonStringInDbFile<T>(string inputObjectName)
     {
-        var itemToOverwriteAsJsonString = JsonSerializer.Serialize(UnfilteredEntities<T>().FirstOrDefault(x => (x as dynamic).Name.Equals(inputObjectName)));
+        var itemToOverwriteAsJsonString = JsonSerializer.Serialize(ReadObjectsInFile<T>().FirstOrDefault(x => (x as dynamic).Name.Equals(inputObjectName)));
         return itemToOverwriteAsJsonString;
     }
 }

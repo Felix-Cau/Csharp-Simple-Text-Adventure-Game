@@ -8,7 +8,7 @@ public class Item : Entity, ISavable
     public bool IsMovable { get; private set; }
     public Room Room { get; private set; }
     
-    public static List<Item> Items { get; set; } = FileHandler.UnfilteredEntities<Item>().OfType<Item>().ToList();
+    public static List<Item> Items { get; set; } = FileHandler.ReadObjectsInFile<Item>().OfType<Item>().ToList();
 
     public Item(string name, string description, bool isMovable, Room room) : base(name, description)
     {

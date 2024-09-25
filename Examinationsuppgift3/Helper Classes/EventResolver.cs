@@ -27,7 +27,7 @@ public static class EventResolver
                 }
                 else
                 {
-                    var targetItemObject = FileHandler.UnfilteredEntities<Door>().OfType<Door>().Where(door => door.Name.ToLower() == targetItemName).SingleOrDefault();
+                    var targetItemObject = FileHandler.ReadObjectsInFile<Door>().OfType<Door>().Where(door => door.Name.ToLower() == targetItemName).SingleOrDefault();
                     if (itemName.ToLower() == "key" && targetItemObject is Door door)
                     {
                         //Här måste någon snajdig grej in för att returnera door-status till listan med doors.
@@ -204,7 +204,7 @@ public static class EventResolver
 
     private static (bool, string itemName) CheckForItemConnectedToAction(string[] userInputAsArray)
     {
-        var itemConnectedToAction = FileHandler.UnfilteredEntities<Item>().OfType<Item>().FirstOrDefault(item => item.Name.ToLower() == userInputAsArray[1]);
+        var itemConnectedToAction = FileHandler.ReadObjectsInFile<Item>().OfType<Item>().FirstOrDefault(item => item.Name.ToLower() == userInputAsArray[1]);
 
         if (itemConnectedToAction == null)
         {
@@ -218,7 +218,7 @@ public static class EventResolver
     
     private static (bool, string itemName) CheckForTargetItem(string[] userInputAsArray)
     {
-        var targetItem = FileHandler.UnfilteredEntities.OfType<Item>().FirstOrDefault(item => item.Name.ToLower() == userInputAsArray[3]);
+        var targetItem = FileHandler.ReadObjectsInFile<Item>().OfType<Item>().FirstOrDefault(item => item.Name.ToLower() == userInputAsArray[3]);
         
         if (targetItem == null)
         {
@@ -232,7 +232,7 @@ public static class EventResolver
 
     private static (bool, string roomName) CheckForTargetRoom(string[] userInputAsArray)
     {
-        var targetRoom = FileHandler.UnfilteredEntities.OfType<Room>().FirstOrDefault(room => room.Name.ToLower() == userInputAsArray[1] || 
+        var targetRoom = FileHandler.ReadObjectsInFile<Room>().OfType<Room>().FirstOrDefault(room => room.Name.ToLower() == userInputAsArray[1] || 
                                                                                               room.Name.ToLower() == userInputAsArray[2] ||
                                                                                               room.Name.ToLower() == userInputAsArray[3]);
         

@@ -6,7 +6,7 @@ namespace Examinationsuppgift3.Classes;
 
 public class Room : Entity, ISavable
 {
-    public static List<Room> Rooms { get; private set; } = FileHandler.UnfilteredEntities<Room>().OfType<Room>().ToList();
+    public static List<Room> Rooms { get; private set; } = FileHandler.ReadObjectsInFile<Room>().OfType<Room>().ToList();
 
     public List<Item> ItemsInRoom { get; private set; } = SetAllItemsInRoomBasedOnRoomNameOnStartup("Bar");
     
@@ -17,7 +17,7 @@ public class Room : Entity, ISavable
     }
     private static List<Item> SetAllItemsInRoomBasedOnRoomNameOnStartup(string roomName)
     {
-        var localItemList = FileHandler.UnfilteredEntities<Item>().OfType<Item>().Where(item => item.Room.Name == roomName).ToList();
+        var localItemList = FileHandler.ReadObjectsInFile<Item>().OfType<Item>().Where(item => item.Room.Name == roomName).ToList();
         
             //alternativ med Query syntax.
             // (from entity in FileHandler.UnfilteredEntities
@@ -28,7 +28,7 @@ public class Room : Entity, ISavable
     }
     public void SearchAllItemsInRoomBasedOnRoomNameAndUpdateListOfItemsInRoom(string roomName)
     {
-        var localItemList = FileHandler.UnfilteredEntities<Item>().OfType<Item>().Where(item => item.Room.Name == roomName).ToList();
+        var localItemList = FileHandler.ReadObjectsInFile<Item>().OfType<Item>().Where(item => item.Room.Name == roomName).ToList();
         ItemsInRoom = localItemList;
     }
     public void SaveObjectToFile<T>(T room)
