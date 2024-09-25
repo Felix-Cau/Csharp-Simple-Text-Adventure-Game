@@ -15,6 +15,7 @@ public class Room : Entity
         Name = name;
         Description = description;
     }
+    
     private static List<Item> SetAllItemsInRoomBasedOnRoomNameOnStartup(string roomName)
     {
         var localItemList = FileHandler.ReadObjectsInFile<Item>().OfType<Item>().Where(item => item.Room.Name == roomName).ToList();
@@ -26,6 +27,7 @@ public class Room : Entity
             
         return localItemList;
     }
+    
     public void SearchAllItemsInRoomBasedOnRoomNameAndUpdateListOfItemsInRoom(string roomName)
     {
         var localItemList = FileHandler.ReadObjectsInFile<Item>().OfType<Item>().Where(item => item.Room.Name == roomName).ToList();

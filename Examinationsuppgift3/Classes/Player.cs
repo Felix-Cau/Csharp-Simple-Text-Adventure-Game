@@ -4,9 +4,10 @@ namespace Examinationsuppgift3.Classes;
 
 public class Player : Entity
 {
-    public List<Item> ItemsOnThePlayer { get; private set; } = FileHandler.ReadObjectsInFile<Item>().OfType<Item>()
-                                                                .Where(x => x.Room.Name == "On Person").ToList();
     public string ActionStatus { get; private set; }
+    
+    public List<Item> ItemsOnThePlayer { get; private set; } = FileHandler.ReadObjectsInFile<Item>().OfType<Item>()
+        .Where(x => x.Room.Name == "On Person").ToList();
     
     public Room CurrentRoom { get; private set; } = FileHandler.ReadObjectsInFile<Room>().OfType<Room>().FirstOrDefault(x => x.Name == "Bar");
 

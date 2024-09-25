@@ -31,9 +31,8 @@ public static class EventResolver
                     if (itemName.ToLower() == "key" && targetItemObject is Door door)
                     {
                         //Här måste någon snajdig grej in för att returnera door-status till listan med doors.
-                        door.UnlockDoor();
-                        player.ChangeCurrentRoom(door.Name);
-                        return player;
+                        targetItemObject.UnlockDoor();
+                        FileHandler.SaveObjectToFile(targetItemObject);
                     }
                     else if (itemName.ToLower() == "key" && targetItemObject is not Door)
                     {
@@ -56,7 +55,6 @@ public static class EventResolver
             else
             {
                 room.SearchAllItemsInRoomBasedOnRoomNameAndUpdateListOfItemsInRoom(player.CurrentRoom.Name);
-                    // FileHandler.UnfilteredEntities.OfType<Item>().FirstOrDefault(x => x.Name == itemName);
                 var itemToUpdate = room.ItemsInRoom.FirstOrDefault(x => x.Name == itemName);
 
                 if (itemToUpdate is not null && itemToUpdate.IsMovable)
@@ -139,7 +137,11 @@ public static class EventResolver
         {
             //Kolla upp linked-lists grejen Viktor skickade.
             var directionToMove = UserInputHandler.DirectionWord(userInputAsArray);
-            if (door.IsLocked)
+            
+            var localDoorList = FileHandler.ReadObjectsInFile<Door>().OfType<Door>().Where(x => x.Room.Name == player.CurrentRoom.Name).ToList();
+            var doorToCheck = localDoorList.FirstOrDefault(x => x.Room.Name == room.Name);
+            
+            if (doorToCheck.IsLocked)
             {
                 Console.WriteLine("The door is locked. Use a key to unlock the door.");
             }
@@ -153,7 +155,7 @@ public static class EventResolver
                     player.ChangeCurrentRoom(targetRoom.Name);
                     Console.WriteLine($"You have entered the next room. It's the {targetRoom.Name}.");
                 }
-                else if (targetRoom.Name == "DarkEndRoom")
+                else if (targetRoom.Name == "Dark End Room")
                 {
                     Console.WriteLine("You have entered the last room in this game.\n");
                     Console.WriteLine(targetRoom.Description);
