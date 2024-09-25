@@ -21,14 +21,9 @@ public class Player : Entity
     {
         ActionStatus = userInput;
     }
-    
-    public List<Item> GetItemsOnThePlayer()
-    {
-        return ItemsOnThePlayer;
-    }
 
-    public void ChangeCurrentRoom(string newRoomName)
+    public void ChangeCurrentRoom(Room newRoom)
     {
-        CurrentRoom = FileHandler.ReadObjectsInFile<Room>().OfType<Room>().FirstOrDefault(x => x.Name == newRoomName);
+        CurrentRoom = newRoom;
     }
 }

@@ -5,12 +5,10 @@ namespace Examinationsuppgift3.Classes;
 public class Door : Item
 {
     public bool IsLocked { get; set; }
-    public List<Room> ConnectedRoom { get; private set; }
     
-    public Door(string name, string description, Room room, bool isLocked, List<Room> connectedRoom) : base(name, description, room)
+    public Door(string name, string description, bool isMovable, Room room, bool isLocked) : base(name, description, isMovable, room)
     {
         IsLocked = isLocked;
-        ConnectedRoom = connectedRoom;
     }
 
     public void UnlockDoor()

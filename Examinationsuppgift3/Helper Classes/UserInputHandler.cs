@@ -29,35 +29,10 @@ public static class UserInputHandler
             case "inspect":
                 player.SetActionStatus("inspect");
                 break;
-            case "move":
-                player.SetActionStatus("move");
-                break;
             default:
                 player.SetActionStatus("Invalid command. Please try again.");
                 break;
         }
         return player;
-    }
-    
-    public static string DirectionWord(string[] userInputAsArray)
-    {
-        var userInputDirection = userInputAsArray[1];
-        switch (userInputDirection)
-        {
-            case "to":
-                return "to";
-                break;
-            case "back":
-                if (userInputAsArray[2] == "to")
-                {
-                    return "back to";
-                }
-                else
-                {
-                    return "back";
-                }
-            default:
-                return "Not a valid direction.";
-        }
     }
 }

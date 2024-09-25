@@ -1,4 +1,5 @@
 using System.ComponentModel.Design;
+using System.Diagnostics;
 using Examinationsuppgift3.Classes;
 
 namespace Examinationsuppgift3.Helper_Classes;
@@ -13,34 +14,80 @@ public static class EventResolver
 
         if (player.ActionStatus == "use")
         {
-            (bool doesItemExist, string itemName) = Utilities.CheckForItemConnectedToAction(userInputAsArray);
-            if (!doesItemExist)
+            (bool doesDoorExist, string doorName) = Utilities.CheckForDoorConnectedToAction(userInputAsArray);
+            
+            if (doesDoorExist)
             {
-                Console.WriteLine("Error, the item you tried to use doesn't exist.");
+                switch (doorName)
+                {
+                    case "door from the bar":
+                        var localUpdatePlayerCurrentRoomWithHallway = FileHandler.ReadObjectsInFile<Room>().OfType<Room>()
+                                                                      .Where(room => room.Name == "Hallway").SingleOrDefault();
+                        player.ChangeCurrentRoom(localUpdatePlayerCurrentRoomWithHallway);
+                        Console.WriteLine("You have entered the hallway.");
+                        break;
+                    case "door back to the bar":
+                        var localUpdatePlayerCurrentRoomWithBar = FileHandler.ReadObjectsInFile<Room>().OfType<Room>()
+                                                                  .Where(room => room.Name == "Bar").SingleOrDefault();
+                        player.ChangeCurrentRoom(localUpdatePlayerCurrentRoomWithBar);
+                        Console.WriteLine("You have gone back to the bar.");
+                        break;
+                    case "mysterious door":
+                        var localUpdatePlayerCurrentRoomWithEndRoom = FileHandler.ReadObjectsInFile<Room>().OfType<Room>()
+                                                                      .Where(room => room.Name == "EndRoom").SingleOrDefault();
+                        var localDarkEndRoomObject = FileHandler.ReadObjectsInFile<Door>().OfType<Door>()
+                                                     .Where(door => door.Name == "Mysterious door").SingleOrDefault();
+
+                        if (localDarkEndRoomObject.IsLocked)
+                        {
+                            Console.WriteLine("You are trying to open a locked door. Find a key and use it on the door.");
+                        }
+                        else if (!localDarkEndRoomObject.IsLocked)
+                        {
+                            player.ChangeCurrentRoom(localUpdatePlayerCurrentRoomWithEndRoom);
+                            Console.WriteLine("You have entered the last room in this game.\n");
+                            Console.WriteLine(localUpdatePlayerCurrentRoomWithEndRoom.Description);
+                            localKeepGameLoopGoing = false;
+                            Console.ReadKey();
+                        }
+                        break;
+                    default:
+                        Console.WriteLine("Something went wrong. Try to use the door again.");
+                        break;
+                }
             }
             else
             {
-                (bool doesTargetItemExist, string targetItemName) = Utilities.CheckForTargetItem(userInputAsArray);
-                if (!doesTargetItemExist)
+                (bool doesItemExist, string itemName) = Utilities.CheckForItemConnectedToAction(userInputAsArray);
+            
+                if (!doesItemExist)
                 {
-                    Console.WriteLine("Error, the target item you tried to use doesn't exist.");
+                    Console.WriteLine("Error, the item you tried to use doesn't exist.");
                 }
                 else
                 {
-                    var targetItemObject = FileHandler.ReadObjectsInFile<Door>().OfType<Door>().Where(door => door.Name.ToLower() == targetItemName).SingleOrDefault();
-                    if (itemName.ToLower() == "key" && targetItemObject is Door door)
+                    (bool doesTargetItemExist, string targetItemName) = Utilities.CheckForTargetItem(userInputAsArray);
+                    if (!doesTargetItemExist)
                     {
-                        //Här måste någon snajdig grej in för att returnera door-status till listan med doors.
-                        targetItemObject.UnlockDoor();
-                        FileHandler.SaveObjectToFile(targetItemObject);
-                    }
-                    else if (itemName.ToLower() == "key" && targetItemObject is not Door)
-                    {
-                        Console.WriteLine("The target item you tried to use a key on is not a door.");
+                        Console.WriteLine("Error, the target item you tried to use doesn't exist.");
                     }
                     else
                     {
-                        Console.WriteLine($"There is no way to interact with {itemName} on {targetItemName}");
+                        var targetItemObject = FileHandler.ReadObjectsInFile<Door>().OfType<Door>().Where(door => door.Name.ToLower() == targetItemName).SingleOrDefault();
+                        if (itemName.ToLower() == "key" && targetItemObject is Door door)
+                        {
+                            //Här måste någon snajdig grej in för att returnera door-status till listan med doors.
+                            targetItemObject.UnlockDoor();
+                            FileHandler.SaveObjectToFile(targetItemObject);
+                        }
+                        else if (itemName.ToLower() == "key" && targetItemObject is not Door)
+                        {
+                            Console.WriteLine("The target item you tried to use a key on is not a door.");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"There is no way to interact with {itemName} on {targetItemName}");
+                        }
                     }
                 }
             }
@@ -133,48 +180,10 @@ public static class EventResolver
                 Console.WriteLine("The item you try to inspect doesn't exist.");
             }
         }
-        else if (player.ActionStatus == "move")
-        {
-            //Kolla upp linked-lists grejen Viktor skickade.
-            var directionToMove = UserInputHandler.DirectionWord(userInputAsArray);
-            
-            var localDoorList = FileHandler.ReadObjectsInFile<Door>().OfType<Door>().Where(x => x.Room.Name == player.CurrentRoom.Name).ToList();
-            var doorToCheck = localDoorList.FirstOrDefault(x => x.Room.Name == room.Name);
-            
-            if (doorToCheck.IsLocked)
-            {
-                Console.WriteLine("The door is locked. Use a key to unlock the door.");
-            }
-            else
-            {
-                (bool doorExist, string roomName) = Utilities.CheckForTargetRoom(userInputAsArray);
-                var targetRoom = Room.Rooms.FirstOrDefault(room => room.Name == roomName);
-                
-                if (doorExist && !door.IsLocked)
-                {
-                    player.ChangeCurrentRoom(targetRoom.Name);
-                    Console.WriteLine($"You have entered the next room. It's the {targetRoom.Name}.");
-                }
-                else if (targetRoom.Name == "Dark End Room")
-                {
-                    Console.WriteLine("You have entered the last room in this game.\n");
-                    Console.WriteLine(targetRoom.Description);
-                    localKeepGameLoopGoing = false;
-                }
-                else
-                {
-                    Console.WriteLine("The door you try to interact with doesn't exist.");
-
-                }
-            }
-        }
         else
         {
             Console.WriteLine($"{player.ActionStatus}");
         }
         return (localKeepGameLoopGoing, player);
     }
-
-    
-
 }
