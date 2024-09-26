@@ -37,7 +37,7 @@ public static class EventResolver
                         var localUpdatePlayerCurrentRoomWithEndRoom = Repository.AllObjectsInGame.OfType<Room>()
                                                                       .SingleOrDefault(room => room.Name == "EndRoom");
                         var localDarkEndRoomObject = Repository.AllObjectsInGame.OfType<Door>()
-                                                     .SingleOrDefault(door => door.Name == "Mysterious door");
+                                                     .SingleOrDefault(door => door.Name == "MysteriousDoor");
 
                         if (localDarkEndRoomObject.IsLocked)
                         {
@@ -75,7 +75,7 @@ public static class EventResolver
                     else
                     {
                         var targetItemObject = Repository.AllObjectsInGame.OfType<Door>().SingleOrDefault(door => door.Name == targetItemName);
-                        if (itemName.ToLower() == "key" && targetItemObject is Door)
+                        if (itemName.ToLower() == "key" && targetItemObject is not null)
                         {
                             if (targetItemObject.IsLocked)
                             {
@@ -143,7 +143,7 @@ public static class EventResolver
             else
             {
                 var itemToUpdate = Repository.AllObjectsInGame.OfType<Item>().FirstOrDefault(x => x.Name == itemName);
-                if (itemToUpdate is null)
+                if (itemToUpdate is not null)
                 {
                     itemToUpdate.Room.Name = room.Name;
                     FileHandler.OverwriteObjectFromFileAndChangeObjectDetails(itemToUpdate, itemToUpdate.Name);

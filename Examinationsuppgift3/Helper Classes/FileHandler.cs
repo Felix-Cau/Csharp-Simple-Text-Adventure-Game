@@ -82,16 +82,17 @@ public static class FileHandler
     public static void OverwriteObjectFromFileAndChangeObjectDetails<T>(T objToUpdate, string entityName)
     {
         var inputObjectAsJsonString = JsonSerializer.Serialize(objToUpdate);
-        _temporaryObjectAsJson = FindObjectJsonStringInDbFile<T>(entityName);
+        _temporaryObjectAsJson = FindObjectJsonStringInDbFile(entityName);
         
-        string fileContent = File.ReadAllText(_filePath);
-        fileContent = fileContent.Replace(_temporaryObjectAsJson, entityName);
-        File.WriteAllText(_filePath, fileContent);
+        List<string> fileContent = File.ReadAllLines(_filePath).ToList();
+        fileContent.Remove(_temporaryObjectAsJson);
+        fileContent.Add(inputObjectAsJsonString);
+        File.WriteAllLines(_filePath, fileContent);
     
         _temporaryObjectAsJson = string.Empty;
     }
 
-    public static string FindObjectJsonStringInDbFile<T>(string inputObjectName)
+    public static string FindObjectJsonStringInDbFile(string inputObjectName)
     {
         var itemToOverwriteAsJsonString = JsonSerializer.Serialize(ReadObjectsInFile().FirstOrDefault(x => (x as dynamic).Name.Equals(inputObjectName)));
         return itemToOverwriteAsJsonString;
