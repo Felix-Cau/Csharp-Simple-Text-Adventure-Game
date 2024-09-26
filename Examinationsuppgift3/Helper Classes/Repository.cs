@@ -13,7 +13,7 @@ public static class Repository
     
     public static void LoadAllObjectsInGame()
     {
-        AllObjectsInGame = FileHandler.ReadObjectsInFile<Object>().OfType<Object>().ToList();
+        AllObjectsInGame = FileHandler.ReadObjectsInFile().OfType<Object>().ToList();
     }
 
     // public static void LoadAllDoorsInGame()

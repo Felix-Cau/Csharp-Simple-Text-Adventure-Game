@@ -7,7 +7,15 @@ public static class UserInputHandler
     public static string[] UserInputToArray()
     {
         var userInput = Console.ReadLine().Trim().ToLower().Split(" ");
-        return userInput;
+
+        string[] fixedUserInputArray = new string[5];
+        
+        for (int i = 0; i < Math.Min(userInput.Length, 5); i++)
+        {
+            fixedUserInputArray[i] = userInput[i];
+        }
+        
+        return fixedUserInputArray;
     }
     
     public static Player CheckForActionKeywords(Player player, string[] userInputAsArray)

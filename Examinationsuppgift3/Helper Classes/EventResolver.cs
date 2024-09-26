@@ -6,34 +6,34 @@ namespace Examinationsuppgift3.Helper_Classes;
 
 public static class EventResolver
 {
-    public static (bool, Player, Room) ResolveEvents(Player inputPlayer, Room inputRoom, string[] userInputAsArray)
+    public static (bool, Player, Room) ResolveEvents(Player inputPlayer, string[] userInputAsArray)
     {
         bool localKeepGameLoopGoing = true;
         var player = UserInputHandler.CheckForActionKeywords(inputPlayer, userInputAsArray);
-        var room = inputRoom;
-        // var room = Repository.AllObjectsInGame.OfType<Room>().Where(room => room.Name == player.CurrentRoom.Name).SingleOrDefault();
+        // var room = inputRoom;
+        var room = Repository.AllObjectsInGame.OfType<Room>().Where(room => room.Name == player.CurrentRoom.Name).SingleOrDefault();
 
         if (player.ActionStatus == "use")
         {
-            (bool doesDoorExist, string doorName) = Utilities.CheckForDoorConnectedToAction(userInputAsArray);
+            (bool doesDoorExist, string doorNameInLowerCase) = Utilities.CheckForDoorConnectedToAction(userInputAsArray);
             
             if (doesDoorExist)
             {
-                switch (doorName)
+                switch (doorNameInLowerCase)
                 {
-                    case "door from the bar":
+                    case "doorfromthebar":
                         var localUpdatePlayerCurrentRoomWithHallway = Repository.AllObjectsInGame.OfType<Room>()
                             .SingleOrDefault(room => room.Name == "Hallway");
                         player.ChangeCurrentRoom(localUpdatePlayerCurrentRoomWithHallway);
                         Console.WriteLine("You have entered the hallway.");
                         break;
-                    case "door back to the bar":
+                    case "doorbacktothebar":
                         var localUpdatePlayerCurrentRoomWithBar = Repository.AllObjectsInGame.OfType<Room>()
                                                                   .SingleOrDefault(room => room.Name == "Bar");
                         player.ChangeCurrentRoom(localUpdatePlayerCurrentRoomWithBar);
                         Console.WriteLine("You have gone back to the bar.");
                         break;
-                    case "mysterious door":
+                    case "mysteriousdoor":
                         var localUpdatePlayerCurrentRoomWithEndRoom = Repository.AllObjectsInGame.OfType<Room>()
                                                                       .SingleOrDefault(room => room.Name == "EndRoom");
                         var localDarkEndRoomObject = Repository.AllObjectsInGame.OfType<Door>()
@@ -74,7 +74,7 @@ public static class EventResolver
                     }
                     else
                     {
-                        var targetItemObject = Repository.AllObjectsInGame.OfType<Door>().SingleOrDefault(door => door.Name.ToLower() == targetItemName);
+                        var targetItemObject = Repository.AllObjectsInGame.OfType<Door>().SingleOrDefault(door => door.Name == targetItemName);
                         if (itemName.ToLower() == "key" && targetItemObject is Door)
                         {
                             if (targetItemObject.IsLocked)
@@ -158,17 +158,25 @@ public static class EventResolver
         }
         else if (player.ActionStatus == "search")
         {
-            // (bool doesItemExist, string itemName) = Utilities.CheckForItemConnectedToAction(userInputAsArray);
-            // if (!doesItemExist)
-            // {
-            //     Console.WriteLine("It appears the item you search for ");
-            // }
-            var localRoomAndItemList = Repository.AllObjectsInGame.OfType<Item>().Where(item => item.Room.Name == player.CurrentRoom.Name).ToList();
-                // FileHandler.ReadObjectsInFile<Item>().OfType<Item>().Where(item => item.Room.Name == player.CurrentRoom.Name).ToList();
-            Console.WriteLine("The items in this room are:");
-            foreach (var item in localRoomAndItemList)
+            (bool isItThePlayer, string onPlayerName) = Utilities.CheckIfTargetIsPlayer(userInputAsArray);
+
+            if (isItThePlayer)
             {
-                Console.WriteLine($"{item.Name}");
+                var localPlayerInventory = Repository.AllObjectsInGame.OfType<Item>().Where(item => item.Room.Name == onPlayerName).ToList();
+                Console.WriteLine("The item you carry are:");
+                foreach (var item in localPlayerInventory)
+                {
+                    Console.WriteLine(item.Name);
+                }
+            }
+            else
+            {
+                var localRoomAndItemList = Repository.AllObjectsInGame.OfType<Item>().Where(item => item.Room.Name == player.CurrentRoom.Name).ToList();
+                Console.WriteLine("The items in this room are:");
+                foreach (var item in localRoomAndItemList)
+                {
+                    Console.WriteLine($"{item.Name}");
+                }
             }
         }
         else if (player.ActionStatus == "inspect")

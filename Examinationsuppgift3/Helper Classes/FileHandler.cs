@@ -30,20 +30,26 @@ public static class FileHandler
                 {
                     var objectsType = objectsTypeElement.GetString();
 
-                    if (objectsType == "Door")
+                    switch (objectsType)
                     {
-                        var doorAsJsonstring = JsonSerializer.Deserialize<Door>(objectAsString);
-                        items.Add(doorAsJsonstring);
-                    }
-                    else if (objectsType == "Room")
-                    {
-                        var roomAsJsonstring = JsonSerializer.Deserialize<Room>(objectAsString);
-                        items.Add(roomAsJsonstring);
-                    }
-                    else if (objectsType == "Item")
-                    {
-                        var itemAsJsonstring = JsonSerializer.Deserialize<Item>(objectAsString);
-                        items.Add(itemAsJsonstring);
+                        case "Door":
+                        {
+                            var doorAsJsonstring = JsonSerializer.Deserialize<Door>(objectAsString);
+                            items.Add(doorAsJsonstring);
+                            break;
+                        }
+                        case "Room":
+                        {
+                            var roomAsJsonstring = JsonSerializer.Deserialize<Room>(objectAsString);
+                            items.Add(roomAsJsonstring);
+                            break;
+                        }
+                        case "Item":
+                        {
+                            var itemAsJsonstring = JsonSerializer.Deserialize<Item>(objectAsString);
+                            items.Add(itemAsJsonstring);
+                            break;
+                        }
                     }
                 }
             }
@@ -87,7 +93,7 @@ public static class FileHandler
 
     public static string FindObjectJsonStringInDbFile<T>(string inputObjectName)
     {
-        var itemToOverwriteAsJsonString = JsonSerializer.Serialize(ReadObjectsInFile<T>().FirstOrDefault(x => (x as dynamic).Name.Equals(inputObjectName)));
+        var itemToOverwriteAsJsonString = JsonSerializer.Serialize(ReadObjectsInFile().FirstOrDefault(x => (x as dynamic).Name.Equals(inputObjectName)));
         return itemToOverwriteAsJsonString;
     }
 }

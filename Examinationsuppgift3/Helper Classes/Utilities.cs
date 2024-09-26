@@ -6,8 +6,8 @@ public static class Utilities
 {
     public static (bool, string doorName) CheckForDoorConnectedToAction(string[] userInputAsArray)
     {
-        var doorConnectedToAction = FileHandler.ReadObjectsInFile<Door>().OfType<Door>().FirstOrDefault(door => door.Name.ToLower() == userInputAsArray[1] || 
-                                                                                                        door.Name.ToLower() == userInputAsArray[2]);
+        var doorConnectedToAction = Repository.AllObjectsInGame.OfType<Door>().FirstOrDefault(door => door.Name.ToLower() == userInputAsArray[1] || 
+                                                                                              door.Name.ToLower() == userInputAsArray[2]);
 
         if (doorConnectedToAction == null)
         {
@@ -20,7 +20,7 @@ public static class Utilities
     }
     public static (bool, string itemName) CheckForItemConnectedToAction(string[] userInputAsArray)
     {
-        var itemConnectedToAction = FileHandler.ReadObjectsInFile<Item>().OfType<Item>().FirstOrDefault(item => item.Name.ToLower() == userInputAsArray[1] || 
+        var itemConnectedToAction = Repository.AllObjectsInGame.OfType<Item>().FirstOrDefault(item => item.Name.ToLower() == userInputAsArray[1] || 
             item.Name.ToLower() == userInputAsArray[2]);
 
         if (itemConnectedToAction == null)
@@ -35,7 +35,7 @@ public static class Utilities
     
     public static (bool, string itemName) CheckForTargetItem(string[] userInputAsArray)
     {
-        var targetItem = FileHandler.ReadObjectsInFile<Item>().OfType<Item>().FirstOrDefault(item => item.Name.ToLower() == userInputAsArray[3]);
+        var targetItem = Repository.AllObjectsInGame.OfType<Item>().FirstOrDefault(item => item.Name.ToLower() == userInputAsArray[3]);
         
         if (targetItem == null)
         {
@@ -49,7 +49,7 @@ public static class Utilities
 
     public static (bool, string roomName) CheckForTargetRoom(string[] userInputAsArray)
     {
-        var targetRoom = FileHandler.ReadObjectsInFile<Room>().OfType<Room>().FirstOrDefault(room => room.Name.ToLower() == userInputAsArray[1] || 
+        var targetRoom = Repository.AllObjectsInGame.OfType<Room>().FirstOrDefault(room => room.Name.ToLower() == userInputAsArray[1] || 
             room.Name.ToLower() == userInputAsArray[2] ||
             room.Name.ToLower() == userInputAsArray[3]);
         
@@ -60,6 +60,20 @@ public static class Utilities
         else
         {
             return (true, targetRoom.Name);
+        }
+    }
+
+    public static (bool, string roomName) CheckIfTargetIsPlayer(string[] userInputAsArray)
+    {
+        if (userInputAsArray[1] == "player" || userInputAsArray[2] == "player" || userInputAsArray[1] == "person" || userInputAsArray[2] == "person")
+        {
+            var targetPlayer = Repository.AllObjectsInGame.OfType<Room>()
+                .FirstOrDefault(room => room.Name.Contains("Person"));
+            return (true, targetPlayer.Name);
+        }
+        else
+        {
+            return (false, "Didn't work, try again.");
         }
     }
 }

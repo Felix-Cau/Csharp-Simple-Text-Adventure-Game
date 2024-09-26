@@ -1,5 +1,4 @@
 ﻿
-using System.Runtime;
 using Examinationsuppgift3.Classes;
 using Examinationsuppgift3.Helper_Classes;
 
@@ -28,6 +27,7 @@ while (keepGameGoing)
                 Console.WriteLine(Static_Messages.WelcomeAndStart);
                 
                 bool keepGameLoopGoing = true;
+                
                 Room room = Repository.AllObjectsInGame.OfType<Room>().Where(room => room.Name == player.CurrentRoom.Name).FirstOrDefault();
                     // FileHandler.ReadObjectsInFile<Room>().OfType<Room>().Where(room => room.Name == "Bar").SingleOrDefault();
                 // room.SetAllItemsInRoomOnStartup();
@@ -36,7 +36,7 @@ while (keepGameGoing)
                 {
                     Console.WriteLine(Static_Messages.AskUserForNextAction);
                     var userInputAsArray = UserInputHandler.UserInputToArray();
-                    (keepGameLoopGoing, player, room) = EventResolver.ResolveEvents(player, room, userInputAsArray);
+                    (keepGameLoopGoing, player, room) = EventResolver.ResolveEvents(player, userInputAsArray);
                 }
                 break;
             case "2":
@@ -116,9 +116,9 @@ while (keepGameGoing)
 // itemsInGame.Add(Knife);
 // itemsInGame.Add(EnergyBar);
 //
-// Door DoorFromTheBar = new Door("Door from the Bar", "A cold looking metal door", false, Bar, false);
-// Door ToTheBar =  new Door("Door back to the Bar", "A cold looking metal door", false, Hallway, false);
-// Door MysteriousDoor = new Door("Mysterious door",
+// Door DoorFromTheBar = new Door("DoorFromTheBar", "A cold looking metal door", false, Bar, false);
+// Door ToTheBar =  new Door("DoorBackToTheBar", "A cold looking metal door", false, Hallway, false);
+// Door MysteriousDoor = new Door("MysteriousDoor",
 //     "You can't see much beyond the outline of the door because of the darkness. But as you feel it, it is almost as someone has carved a shallow pattern on it.",
 //     false, Hallway, true);
 //
