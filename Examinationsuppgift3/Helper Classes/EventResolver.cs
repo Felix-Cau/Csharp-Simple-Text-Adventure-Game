@@ -184,9 +184,9 @@ public static class EventResolver
         else if (player.ActionStatus == "inspect")
         {
             (bool doesItemExist, string itemName) = Utilities.CheckForItemConnectedToAction(userInputAsArray);
-            var localAllItemsInRoom = Repository.AllObjectsInGame.OfType<Item>().Where(item => item.Room.Name == player.CurrentRoom.Name).ToList();
-
-            var itemToInspect = localAllItemsInRoom.FirstOrDefault(x => x.Name == itemName);
+            
+            var localAllItemsInRoom = Repository.AllObjectsInGame.OfType<Item>().Where(item => item.Room.Name == player.CurrentRoom.Name || item.Room.Name == "On Person").ToList();
+            var itemToInspect = localAllItemsInRoom.SingleOrDefault(x => x.Name == itemName);
             
             if (!doesItemExist)
             {
@@ -202,14 +202,10 @@ public static class EventResolver
                     Console.WriteLine("Something went wrong. Try to inspect again.");
                 }
             }
-            else if (itemToInspect is not null)
+            else
             {
                 Console.WriteLine("You inspect it:\n");
                 Console.WriteLine(itemToInspect.Description);
-            }
-            else
-            {
-                Console.WriteLine("The item you try to inspect doesn't exist.");
             }
         }
         else
