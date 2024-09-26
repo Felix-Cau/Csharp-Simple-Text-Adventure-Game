@@ -20,8 +20,9 @@ public static class Utilities
     }
     public static (bool, string itemName) CheckForItemConnectedToAction(string[] userInputAsArray)
     {
-        var itemConnectedToAction = Repository.AllObjectsInGame.OfType<Item>().FirstOrDefault(item => item.Name.ToLower() == userInputAsArray[1] || 
-            item.Name.ToLower() == userInputAsArray[2]);
+        var itemConnectedToAction = Repository.AllObjectsInGame.OfType<Item>()
+                                                               .FirstOrDefault(item => item.Name.ToLower() == userInputAsArray[1] || 
+                                                                item.Name.ToLower() == userInputAsArray[2]);
 
         if (itemConnectedToAction == null)
         {
@@ -35,7 +36,9 @@ public static class Utilities
     
     public static (bool, string itemName) CheckForTargetItem(string[] userInputAsArray)
     {
-        var targetItem = Repository.AllObjectsInGame.OfType<Item>().FirstOrDefault(item => item.Name.ToLower() == userInputAsArray[3]);
+        var targetItem = Repository.AllObjectsInGame.OfType<Item>()
+                                                    .FirstOrDefault(item => item.Name.ToLower() == userInputAsArray[2] || 
+                                                                    item.Name.ToLower() == userInputAsArray[3]);
         
         if (targetItem == null)
         {
@@ -49,9 +52,10 @@ public static class Utilities
 
     public static (bool, string roomName) CheckForTargetRoom(string[] userInputAsArray)
     {
-        var targetRoom = Repository.AllObjectsInGame.OfType<Room>().FirstOrDefault(room => room.Name.ToLower() == userInputAsArray[1] || 
-            room.Name.ToLower() == userInputAsArray[2] ||
-            room.Name.ToLower() == userInputAsArray[3]);
+        var targetRoom = Repository.AllObjectsInGame.OfType<Room>()
+                                                    .FirstOrDefault(room => room.Name.ToLower() == userInputAsArray[1] || 
+                                                     room.Name.ToLower() == userInputAsArray[2] ||
+                                                     room.Name.ToLower() == userInputAsArray[3]);
         
         if (targetRoom == null)
         {

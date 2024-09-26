@@ -35,7 +35,7 @@ public static class EventResolver
                         break;
                     case "mysteriousdoor":
                         var localUpdatePlayerCurrentRoomWithEndRoom = Repository.AllObjectsInGame.OfType<Room>()
-                                                                      .SingleOrDefault(room => room.Name == "EndRoom");
+                                                                      .SingleOrDefault(room => room.Name == "Dark End Room");
                         var localDarkEndRoomObject = Repository.AllObjectsInGame.OfType<Door>()
                                                      .SingleOrDefault(door => door.Name == "MysteriousDoor");
 
@@ -68,13 +68,15 @@ public static class EventResolver
                 else
                 {
                     (bool doesTargetItemExist, string targetItemName) = Utilities.CheckForTargetItem(userInputAsArray);
+                    var targetItemObject = Repository.AllObjectsInGame.OfType<Door>().SingleOrDefault(door => door.Name == targetItemName);
+                    
                     if (!doesTargetItemExist)
                     {
                         Console.WriteLine("Error, the target item you tried to use doesn't exist.");
                     }
                     else
                     {
-                        var targetItemObject = Repository.AllObjectsInGame.OfType<Door>().SingleOrDefault(door => door.Name == targetItemName);
+                        
                         if (itemName.ToLower() == "key" && targetItemObject is not null)
                         {
                             if (targetItemObject.IsLocked)
@@ -184,7 +186,6 @@ public static class EventResolver
             (bool doesItemExist, string itemName) = Utilities.CheckForItemConnectedToAction(userInputAsArray);
             var localAllItemsInRoom = Repository.AllObjectsInGame.OfType<Item>().Where(item => item.Room.Name == player.CurrentRoom.Name).ToList();
 
-            // room.SearchAllItemsInRoomBasedOnRoomNameAndUpdateListOfItemsInRoom(player.CurrentRoom.Name);
             var itemToInspect = localAllItemsInRoom.FirstOrDefault(x => x.Name == itemName);
             
             if (!doesItemExist)

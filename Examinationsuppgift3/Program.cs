@@ -10,9 +10,6 @@ while (keepGameGoing)
     
     Console.WriteLine(Static_Messages.BeforeWelcome);
     var player = MenuHandler.CreatePlayer();
-    player.SetCurrentRoomAtStartUp();
-    player.SetItemsOnThePlayerAtStartUp();
-    
     
     bool keepMenuLoopGoing = true;
 
@@ -29,8 +26,6 @@ while (keepGameGoing)
                 bool keepGameLoopGoing = true;
                 
                 Room room = Repository.AllObjectsInGame.OfType<Room>().Where(room => room.Name == player.CurrentRoom.Name).FirstOrDefault();
-                    // FileHandler.ReadObjectsInFile<Room>().OfType<Room>().Where(room => room.Name == "Bar").SingleOrDefault();
-                // room.SetAllItemsInRoomOnStartup();
 
                 while (keepGameLoopGoing)
                 {
