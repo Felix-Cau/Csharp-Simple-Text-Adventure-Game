@@ -6,6 +6,7 @@ public class Door : Item
 {
     public bool IsLocked { get; set; }
     
+    public List<Door> AllDoorsInGame { get; private set; }
     public Door(string name, string description, bool isMovable, Room room, bool isLocked) : base(name, description, isMovable, room)
     {
         IsLocked = isLocked;

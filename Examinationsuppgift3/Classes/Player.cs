@@ -5,12 +5,14 @@ namespace Examinationsuppgift3.Classes;
 public class Player : Entity
 {
     public string ActionStatus { get; private set; }
-    
-    public List<Item> ItemsOnThePlayer { get; private set; } 
+
+    public List<Item> ItemsOnThePlayer { get; private set; }
+        // Repository.AllObjectsInGame.OfType<Item>().Where(item => item.Room.Name == "On Person").ToList();
         // = FileHandler.ReadObjectsInFile<Item>().OfType<Item>()
         // .Where(x => x.Room.Name == "On Person").ToList();
-    
-    public Room CurrentRoom { get; private set; } 
+
+        public Room CurrentRoom { get; private set; } = 
+            // Repository.AllObjectsInGame.OfType<Room>().Where(room => room.Name == "Bar").SingleOrDefault();
         // = FileHandler.ReadObjectsInFile<Room>().OfType<Room>().FirstOrDefault(x => x.Name == "Bar");
 
     public Player(string name, string description) : base(name, description)
@@ -22,14 +24,14 @@ public class Player : Entity
         ActionStatus = userInput;
     }
 
-    public void LoadItemsOnThePlayer()
+    public void SetItemsOnThePlayerAtStartUp()
     {
-        ItemsOnThePlayer = FileHandler.ReadObjectsInFile<Item>().OfType<Item>().ToList();
+        ItemsOnThePlayer = Repository.AllObjectsInGame.OfType<Item>().Where(item => item.Room.Name == "On Person").ToList();
     }
 
     public void SetCurrentRoomAtStartUp()
     {
-        CurrentRoom = FileHandler.ReadObjectsInFile<Room>().OfType<Room>().FirstOrDefault(x => x.Name == "Bar");
+        CurrentRoom = Repository.AllObjectsInGame.OfType<Room>().FirstOrDefault(x => x.Name == "Bar");
     }
 
     public void ChangeCurrentRoom(Room newRoom)

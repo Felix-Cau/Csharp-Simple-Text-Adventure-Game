@@ -26,7 +26,7 @@ public static class FileHandler
         }
         return items;
     }
-
+    
     public static void SaveObjectToFile<T>(T obj)
     {
         _temporaryObjectAsJson = JsonSerializer.Serialize(obj);

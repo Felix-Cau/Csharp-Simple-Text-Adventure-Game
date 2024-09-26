@@ -10,7 +10,7 @@ public static class EventResolver
     {
         bool localKeepGameLoopGoing = true;
         player = UserInputHandler.CheckForActionKeywords(player, userInputAsArray);
-        var room = Room.Rooms.Where(room => room.Name == player.CurrentRoom.Name).SingleOrDefault();
+        var room = Repository.AllObjectsInGame.OfType<Room>().Where(room => room.Name == player.CurrentRoom.Name).SingleOrDefault();
 
         if (player.ActionStatus == "use")
         {
@@ -21,22 +21,22 @@ public static class EventResolver
                 switch (doorName)
                 {
                     case "door from the bar":
-                        var localUpdatePlayerCurrentRoomWithHallway = FileHandler.ReadObjectsInFile<Room>().OfType<Room>()
-                                                                      .Where(room => room.Name == "Hallway").SingleOrDefault();
+                        var localUpdatePlayerCurrentRoomWithHallway = Repository.AllObjectsInGame.OfType<Room>()
+                            .SingleOrDefault(room => room.Name == "Hallway");
                         player.ChangeCurrentRoom(localUpdatePlayerCurrentRoomWithHallway);
                         Console.WriteLine("You have entered the hallway.");
                         break;
                     case "door back to the bar":
-                        var localUpdatePlayerCurrentRoomWithBar = FileHandler.ReadObjectsInFile<Room>().OfType<Room>()
-                                                                  .Where(room => room.Name == "Bar").SingleOrDefault();
+                        var localUpdatePlayerCurrentRoomWithBar = Repository.AllObjectsInGame.OfType<Room>()
+                                                                  .SingleOrDefault(room => room.Name == "Bar");
                         player.ChangeCurrentRoom(localUpdatePlayerCurrentRoomWithBar);
                         Console.WriteLine("You have gone back to the bar.");
                         break;
                     case "mysterious door":
-                        var localUpdatePlayerCurrentRoomWithEndRoom = FileHandler.ReadObjectsInFile<Room>().OfType<Room>()
-                                                                      .Where(room => room.Name == "EndRoom").SingleOrDefault();
-                        var localDarkEndRoomObject = FileHandler.ReadObjectsInFile<Door>().OfType<Door>()
-                                                     .Where(door => door.Name == "Mysterious door").SingleOrDefault();
+                        var localUpdatePlayerCurrentRoomWithEndRoom = Repository.AllObjectsInGame.OfType<Room>()
+                                                                      .SingleOrDefault(room => room.Name == "EndRoom");
+                        var localDarkEndRoomObject = Repository.AllObjectsInGame.OfType<Door>()
+                                                     .SingleOrDefault(door => door.Name == "Mysterious door");
 
                         if (localDarkEndRoomObject.IsLocked)
                         {
@@ -73,19 +73,21 @@ public static class EventResolver
                     }
                     else
                     {
-                        var targetItemObject = FileHandler.ReadObjectsInFile<Door>().OfType<Door>().Where(door => door.Name.ToLower() == targetItemName).SingleOrDefault();
-                        if (itemName.ToLower() == "key" && targetItemObject is Door door)
+                        var targetItemObject = Repository.AllObjectsInGame.OfType<Door>().SingleOrDefault(door => door.Name.ToLower() == targetItemName);
+                        if (itemName.ToLower() == "key" && targetItemObject is Door)
                         {
                             if (targetItemObject.IsLocked)
                             {
                                 targetItemObject.UnlockDoor();
                                 FileHandler.OverwriteObjectFromFileAndChangeObjectDetails(targetItemObject, targetItemObject.Name);
+                                Repository.LoadAllObjectsInGame();
                                 Console.WriteLine("You have unlocked the door.");
                             }
                             else if (!targetItemObject.IsLocked)
                             {
                                 targetItemObject.LockDoor();
                                 FileHandler.OverwriteObjectFromFileAndChangeObjectDetails(targetItemObject, targetItemObject.Name);
+                                Repository.LoadAllObjectsInGame();
                                 Console.WriteLine("You have locked the door.");
                             }
                         }
@@ -110,8 +112,8 @@ public static class EventResolver
             }
             else
             {
-                room.SearchAllItemsInRoomBasedOnRoomNameAndUpdateListOfItemsInRoom(player.CurrentRoom.Name);
-                var itemToUpdate = room.ItemsInRoom.FirstOrDefault(x => x.Name == itemName);
+                var localAllItemsInRoom = Repository.AllObjectsInGame.OfType<Item>().Where(item => item.Room.Name == player.CurrentRoom.Name).ToList();
+                var itemToUpdate = localAllItemsInRoom.FirstOrDefault(x => x.Name == itemName);
 
                 if (itemToUpdate is not null && itemToUpdate.IsMovable)
                 {
@@ -139,11 +141,12 @@ public static class EventResolver
             }
             else
             {
-                var itemToUpdate = player.ItemsOnThePlayer.FirstOrDefault(x => x.Name == itemName);
+                var itemToUpdate = Repository.AllObjectsInGame.OfType<Item>().FirstOrDefault(x => x.Name == itemName);
                 if (itemToUpdate is null)
                 {
                     itemToUpdate.Room.Name = room.Name;
                     FileHandler.OverwriteObjectFromFileAndChangeObjectDetails(itemToUpdate, itemToUpdate.Name);
+                    Repository.LoadAllObjectsInGame();
                     Console.WriteLine("You dropped the item.");
                 }
                 else
@@ -154,7 +157,13 @@ public static class EventResolver
         }
         else if (player.ActionStatus == "search")
         {
-            var localRoomAndItemList = FileHandler.ReadObjectsInFile<Item>().OfType<Item>().Where(item => item.Room.Name == player.CurrentRoom.Name).ToList();
+            // (bool doesItemExist, string itemName) = Utilities.CheckForItemConnectedToAction(userInputAsArray);
+            // if (!doesItemExist)
+            // {
+            //     Console.WriteLine("It appears the item you search for ");
+            // }
+            var localRoomAndItemList = Repository.AllObjectsInGame.OfType<Item>().Where(item => item.Room.Name == player.CurrentRoom.Name).ToList();
+                // FileHandler.ReadObjectsInFile<Item>().OfType<Item>().Where(item => item.Room.Name == player.CurrentRoom.Name).ToList();
             Console.WriteLine("The items in this room are:");
             foreach (var item in localRoomAndItemList)
             {
@@ -164,13 +173,15 @@ public static class EventResolver
         else if (player.ActionStatus == "inspect")
         {
             (bool doesItemExist, string itemName) = Utilities.CheckForItemConnectedToAction(userInputAsArray);
-            room.SearchAllItemsInRoomBasedOnRoomNameAndUpdateListOfItemsInRoom(player.CurrentRoom.Name);
-            var itemToInspect = room.ItemsInRoom.FirstOrDefault(x => x.Name == itemName);
+            var localAllItemsInRoom = Repository.AllObjectsInGame.OfType<Item>().Where(item => item.Room.Name == player.CurrentRoom.Name).ToList();
+
+            // room.SearchAllItemsInRoomBasedOnRoomNameAndUpdateListOfItemsInRoom(player.CurrentRoom.Name);
+            var itemToInspect = localAllItemsInRoom.FirstOrDefault(x => x.Name == itemName);
             
             if (!doesItemExist)
             {
                 (bool doesRoomExist, string roomName) = Utilities.CheckForTargetRoom(userInputAsArray);
-                var roomToInspect = Room.Rooms.FirstOrDefault(room => room.Name == roomName);
+                var roomToInspect = Repository.AllObjectsInGame.OfType<Room>().FirstOrDefault(room => room.Name == roomName);
                 if (doesRoomExist && roomToInspect is not null)
                 {
                     Console.WriteLine("You inspect the room:\n");
