@@ -4,6 +4,7 @@ namespace Examinationsuppgift3.Classes;
 
 public class Door : Item
 {
+    public string ObjectType => this.GetType().Name;
     public bool IsLocked { get; set; }
     
     public List<Door> AllDoorsInGame { get; private set; }

@@ -4,8 +4,8 @@ namespace Examinationsuppgift3.Classes;
 
 public class Player : Entity
 {
+    public string ObjectType => this.GetType().Name;
     public string ActionStatus { get; private set; }
-
     public List<Item> ItemsOnThePlayer { get; private set; }
         // Repository.AllObjectsInGame.OfType<Item>().Where(item => item.Room.Name == "On Person").ToList();
         // = FileHandler.ReadObjectsInFile<Item>().OfType<Item>()

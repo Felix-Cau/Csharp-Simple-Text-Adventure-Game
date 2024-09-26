@@ -11,7 +11,7 @@ public class Room : Entity
 
     // public List<Item> ItemsInRoom { get; private set; }
         // = SetAllItemsInRoomBasedOnRoomNameOnStartup("Bar");
-    
+    public string ObjectType => this.GetType().Name;
     public Room(string name, string description) : base(name, description)
     {
     }

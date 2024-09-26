@@ -16,16 +16,36 @@ public static class FileHandler
     private static StreamWriter _writer;
     private static StreamReader _reader;
     
-    public static List<T> ReadObjectsInFile<T>()
+    public static List<Object> ReadObjectsInFile<T>()
     {
-        var items = new List<T>();
+        var items = new List<Object>();
         using (_reader = new StreamReader(_filePath))
         {
             while (!_reader.EndOfStream)
             {
                 var objectAsString = _reader.ReadLine();
-                T item = JsonSerializer.Deserialize<T>(objectAsString);
-                items.Add(item);
+                var jsonDocument = JsonDocument.Parse(objectAsString).RootElement;
+                
+                if (jsonDocument.TryGetProperty("ObjectType", out var objectsTypeElement))
+                {
+                    var objectsType = objectsTypeElement.GetString();
+
+                    if (objectsType == "Door")
+                    {
+                        var doorAsJsonstring = JsonSerializer.Deserialize<Door>(objectAsString);
+                        items.Add(doorAsJsonstring);
+                    }
+                    else if (objectsType == "Room")
+                    {
+                        var roomAsJsonstring = JsonSerializer.Deserialize<Room>(objectAsString);
+                        items.Add(roomAsJsonstring);
+                    }
+                    else if (objectsType == "Item")
+                    {
+                        var itemAsJsonstring = JsonSerializer.Deserialize<Item>(objectAsString);
+                        items.Add(itemAsJsonstring);
+                    }
+                }
             }
         }
         return items;
