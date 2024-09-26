@@ -9,15 +9,36 @@ public static class EventResolver
     public static (bool, Player, Room) ResolveEvents(Player inputPlayer, string[] userInputAsArray)
     {
         bool localKeepGameLoopGoing = true;
+        
         var player = UserInputHandler.CheckForActionKeywords(inputPlayer, userInputAsArray);
-        // var room = inputRoom;
+        
         var room = Repository.AllObjectsInGame.OfType<Room>().Where(room => room.Name == player.CurrentRoom.Name).SingleOrDefault();
 
         if (player.ActionStatus == "use")
         {
+            (bool doesCorkscrewExist, string itemCorkscrew) = Utilities.CheckForItemConnectedToAction(userInputAsArray);
             (bool doesDoorExist, string doorNameInLowerCase) = Utilities.CheckForDoorConnectedToAction(userInputAsArray);
-            
-            if (doesDoorExist)
+            (bool doesItemExist, string itemName) = Utilities.CheckForItemConnectedToAction(userInputAsArray);
+
+            if (doesCorkscrewExist && itemCorkscrew == "Corkscrew" )
+            {
+                var itemToBeAltered = Repository.AllObjectsInGame.OfType<Item>().SingleOrDefault(item => item.Name == "OpenedBottle");
+                (_, string targetItemName) = Utilities.CheckForTargetItem(userInputAsArray);
+                var targetItemObject = Repository.AllObjectsInGame.OfType<Item>().SingleOrDefault(item => item.Name == targetItemName);
+                
+                if (targetItemName == "Bottle")
+                {
+                    targetItemObject.ChangeRoom("Storage");
+                    FileHandler.OverwriteObjectFromFileAndChangeObjectDetails(targetItemObject, targetItemObject.Name);
+                    
+                    itemToBeAltered.ChangeRoom("On Person");
+                    
+                    Console.WriteLine("You now have a opened bottle in your inventory.");
+                    FileHandler.OverwriteObjectFromFileAndChangeObjectDetails(itemToBeAltered, itemToBeAltered.Name);
+                    Repository.LoadAllObjectsInGame();
+                }
+            }
+            else if (doesDoorExist)
             {
                 switch (doorNameInLowerCase)
                 {
@@ -25,13 +46,13 @@ public static class EventResolver
                         var localUpdatePlayerCurrentRoomWithHallway = Repository.AllObjectsInGame.OfType<Room>()
                             .SingleOrDefault(room => room.Name == "Hallway");
                         player.ChangeCurrentRoom(localUpdatePlayerCurrentRoomWithHallway);
-                        Console.WriteLine("You have entered the hallway.");
+                        Console.WriteLine($"You have entered the hallway.\n{localUpdatePlayerCurrentRoomWithHallway.Description}");
                         break;
                     case "doorbacktothebar":
                         var localUpdatePlayerCurrentRoomWithBar = Repository.AllObjectsInGame.OfType<Room>()
                                                                   .SingleOrDefault(room => room.Name == "Bar");
                         player.ChangeCurrentRoom(localUpdatePlayerCurrentRoomWithBar);
-                        Console.WriteLine("You have gone back to the bar.");
+                        Console.WriteLine($"You have gone back to the bar.\n{localUpdatePlayerCurrentRoomWithBar.Description}");
                         break;
                     case "mysteriousdoor":
                         var localUpdatePlayerCurrentRoomWithEndRoom = Repository.AllObjectsInGame.OfType<Room>()
@@ -59,8 +80,6 @@ public static class EventResolver
             }
             else
             {
-                (bool doesItemExist, string itemName) = Utilities.CheckForItemConnectedToAction(userInputAsArray);
-            
                 if (!doesItemExist)
                 {
                     Console.WriteLine("Error, the item you tried to use doesn't exist.");
@@ -76,7 +95,6 @@ public static class EventResolver
                     }
                     else
                     {
-                        
                         if (itemName.ToLower() == "key" && targetItemObject is not null)
                         {
                             if (targetItemObject.IsLocked)

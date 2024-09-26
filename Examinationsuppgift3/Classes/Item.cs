@@ -14,4 +14,10 @@ public class Item : Entity
         IsMovable = isMovable;
         Room = room;
     }
+
+    public void ChangeRoom(string newRoom)
+    {
+        var localNewRoom = Repository.AllObjectsInGame.OfType<Room>().FirstOrDefault(x => x.Name == newRoom);
+        Room = localNewRoom;
+    }
 }

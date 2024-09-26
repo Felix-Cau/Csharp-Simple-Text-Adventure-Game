@@ -33,11 +33,19 @@ while (keepGameGoing)
                     var userInputAsArray = UserInputHandler.UserInputToArray();
                     (keepGameLoopGoing, player, room) = EventResolver.ResolveEvents(player, userInputAsArray);
                 }
+                
+                FileHandler.ResetGame();
+                
                 break;
             case "2":
                 Console.WriteLine(Static_Messages.Goodbye);
                 keepMenuLoopGoing = false;
                 keepGameGoing = false;
+                Console.ReadKey();
+                break;
+            case "3":
+                FileHandler.ResetGame();
+                Console.WriteLine("You have successfully reset the game files. Press any key to continue.");
                 Console.ReadKey();
                 break;
             default:
@@ -46,7 +54,7 @@ while (keepGameGoing)
         }
     } while (keepMenuLoopGoing);
 }
-//
+
 // using Examinationsuppgift3.Classes;
 // using Examinationsuppgift3.Helper_Classes;
 //
@@ -73,8 +81,11 @@ while (keepGameGoing)
 //     "the unknown, inviting yet foreboding. A chill runs down your spine as you sense the weight of the darkness pressing in,\n" +
 //     "and the silence seems to pulse with unseen energy, leaving you acutely aware that you are not alone in this forgotten space.\n" +
 //     "Congratulations, you have finished the game. Press any key to exit the game.");
+// Room Storage = new Room("Storage", "This is purely to keep it separated from the game");
 //
-// Item Bottle = new Item("Bottle", "An old, empty bottle of whisky.", true, Bar);
+// Item Bottle = new Item("Bottle", "An old bottle of whisky.", true, Bar);
+// Item OpenedBottle = new Item("OpenedBottle", "The bottle of opened whisky. It smells delightful!", true, Storage);
+// Item Corkscrew = new Item("Corkscrew", "A shiny new and super sharp corkscrew.", true, Bar);
 // Item Table = new Item("Table", "A sturdy wooden table with carvings and blood stains.", false, Bar);
 // Item Chair = new Item("Chair", "A rickety bar stool.", false, Bar);
 // Item Glass = new Item("Glass", "An empty old beer glass.", true, Bar);
@@ -94,9 +105,12 @@ while (keepGameGoing)
 // rooms.Add(Hallway);
 // rooms.Add(OnPerson);
 // rooms.Add(DarkEndRoom);
+// rooms.Add(Storage);
 //
 // List<Item> itemsInGame = new List<Item>();
 // itemsInGame.Add(Bottle);
+// itemsInGame.Add(OpenedBottle);
+// itemsInGame.Add(Corkscrew);
 // itemsInGame.Add(Table);
 // itemsInGame.Add(Chair);
 // itemsInGame.Add(Glass);

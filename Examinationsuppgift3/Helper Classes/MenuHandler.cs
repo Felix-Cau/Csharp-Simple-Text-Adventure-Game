@@ -9,7 +9,8 @@ public static class MenuHandler
         "You have entered a text adventure game in the Zombie apocalypse",
         "Navigate in the menu by simply writing the number of the option you wish to do",
         "1. New game",
-        "2. Exit game"
+        "2. Exit game",
+        "3. Reset all game files"
     };
     public static void DisplayMainMenu(Player player)
     {
