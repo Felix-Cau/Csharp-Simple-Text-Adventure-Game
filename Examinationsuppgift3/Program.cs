@@ -36,7 +36,7 @@ while (keepGameGoing)
                 {
                     Console.WriteLine(Static_Messages.AskUserForNextAction);
                     var userInputAsArray = UserInputHandler.UserInputToArray();
-                    (keepGameLoopGoing, player, room) = EventResolver.ResolveEvents(player, userInputAsArray);
+                    (keepGameLoopGoing, player, room) = EventResolver.ResolveEvents(player, room, userInputAsArray);
                 }
                 break;
             case "2":

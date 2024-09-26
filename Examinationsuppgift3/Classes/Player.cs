@@ -11,7 +11,7 @@ public class Player : Entity
         // = FileHandler.ReadObjectsInFile<Item>().OfType<Item>()
         // .Where(x => x.Room.Name == "On Person").ToList();
 
-        public Room CurrentRoom { get; private set; } = 
+    public Room CurrentRoom { get; private set; } 
             // Repository.AllObjectsInGame.OfType<Room>().Where(room => room.Name == "Bar").SingleOrDefault();
         // = FileHandler.ReadObjectsInFile<Room>().OfType<Room>().FirstOrDefault(x => x.Name == "Bar");
 

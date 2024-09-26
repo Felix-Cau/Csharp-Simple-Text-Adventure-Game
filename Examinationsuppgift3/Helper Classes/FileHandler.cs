@@ -1,3 +1,5 @@
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
 using System.Text.Json;
 using Examinationsuppgift3.Classes;
 
@@ -8,6 +10,8 @@ public static class FileHandler
     private static readonly string _filePath = "c:/dev/Skola/CsharpKurs1/DbFiles/GameDb.json";
     
     private static string _temporaryObjectAsJson = string.Empty;
+    
+    
 
     private static StreamWriter _writer;
     private static StreamReader _reader;

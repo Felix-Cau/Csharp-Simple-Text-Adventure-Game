@@ -6,11 +6,12 @@ namespace Examinationsuppgift3.Helper_Classes;
 
 public static class EventResolver
 {
-    public static (bool, Player, Room) ResolveEvents(Player player, string[] userInputAsArray)
+    public static (bool, Player, Room) ResolveEvents(Player inputPlayer, Room inputRoom, string[] userInputAsArray)
     {
         bool localKeepGameLoopGoing = true;
-        player = UserInputHandler.CheckForActionKeywords(player, userInputAsArray);
-        var room = Repository.AllObjectsInGame.OfType<Room>().Where(room => room.Name == player.CurrentRoom.Name).SingleOrDefault();
+        var player = UserInputHandler.CheckForActionKeywords(inputPlayer, userInputAsArray);
+        var room = inputRoom;
+        // var room = Repository.AllObjectsInGame.OfType<Room>().Where(room => room.Name == player.CurrentRoom.Name).SingleOrDefault();
 
         if (player.ActionStatus == "use")
         {
