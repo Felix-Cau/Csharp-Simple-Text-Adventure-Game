@@ -16,7 +16,7 @@ public static class FileHandler
     private static StreamWriter _writer;
     private static StreamReader _reader;
     
-    public static List<Object> ReadObjectsInFile<T>()
+    public static List<Object> ReadObjectsInFile()
     {
         var items = new List<Object>();
         using (_reader = new StreamReader(_filePath))
