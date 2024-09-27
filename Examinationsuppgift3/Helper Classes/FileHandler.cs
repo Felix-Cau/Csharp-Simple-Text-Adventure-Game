@@ -34,20 +34,20 @@ public static class FileHandler
                     {
                         case "Door":
                         {
-                            var doorAsJsonstring = JsonSerializer.Deserialize<Door>(objectAsString);
-                            items.Add(doorAsJsonstring);
+                            var doorFromJsonString = JsonSerializer.Deserialize<Door>(objectAsString);
+                            items.Add(doorFromJsonString);
                             break;
                         }
                         case "Room":
                         {
-                            var roomAsJsonstring = JsonSerializer.Deserialize<Room>(objectAsString);
-                            items.Add(roomAsJsonstring);
+                            var roomFromJsonString = JsonSerializer.Deserialize<Room>(objectAsString);
+                            items.Add(roomFromJsonString);
                             break;
                         }
                         case "Item":
                         {
-                            var itemAsJsonstring = JsonSerializer.Deserialize<Item>(objectAsString);
-                            items.Add(itemAsJsonstring);
+                            var itemFromJsonString = JsonSerializer.Deserialize<Item>(objectAsString);
+                            items.Add(itemFromJsonString);
                             break;
                         }
                     }
@@ -190,22 +190,16 @@ public static class FileHandler
             SaveObjectsToResetGame(room);
         }
 
-        Console.WriteLine("Rooms saved.");
-        
         foreach (Item item in itemsInGame)
         {
             SaveObjectsToResetGame(item);
         }
-
-        Console.WriteLine("Items saved.");
 
         foreach (Door door in DoorsInGameList)
         {
             SaveObjectsToResetGame(door);
         }
 
-        Console.WriteLine("Doors saved.");
-        
         Repository.LoadAllObjectsInGame();
     }
 }
