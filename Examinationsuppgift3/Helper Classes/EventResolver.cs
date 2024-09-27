@@ -46,13 +46,13 @@ public static class EventResolver
                         var localUpdatePlayerCurrentRoomWithHallway = Repository.AllObjectsInGame.OfType<Room>()
                             .SingleOrDefault(room => room.Name == "Hallway");
                         player.ChangeCurrentRoom(localUpdatePlayerCurrentRoomWithHallway);
-                        Console.WriteLine($"You have entered the hallway.\n{localUpdatePlayerCurrentRoomWithHallway.Description}");
+                        Console.WriteLine($"\nYou have entered the hallway.\n{localUpdatePlayerCurrentRoomWithHallway.Description}");
                         break;
                     case "doorbacktothebar":
                         var localUpdatePlayerCurrentRoomWithBar = Repository.AllObjectsInGame.OfType<Room>()
                                                                   .SingleOrDefault(room => room.Name == "Bar");
                         player.ChangeCurrentRoom(localUpdatePlayerCurrentRoomWithBar);
-                        Console.WriteLine($"You have gone back to the bar.\n{localUpdatePlayerCurrentRoomWithBar.Description}");
+                        Console.WriteLine($"\nYou have gone back to the bar.\n{localUpdatePlayerCurrentRoomWithBar.Description}");
                         break;
                     case "mysteriousdoor":
                         var localUpdatePlayerCurrentRoomWithEndRoom = Repository.AllObjectsInGame.OfType<Room>()
