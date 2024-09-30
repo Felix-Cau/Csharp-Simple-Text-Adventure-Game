@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text.Json;
@@ -149,30 +150,34 @@ public static class FileHandler
         Item Knife = new Item("Knife", "A compact and foldable knife.", true, OnPerson);
         Item EnergyBar = new Item("Energy Bar", "A small energy bar with peanuts and other random perservatives.", true, OnPerson);
 
-        List<Room> rooms = new List<Room>();
-        rooms.Add(Bar);
-        rooms.Add(Hallway);
-        rooms.Add(OnPerson);
-        rooms.Add(DarkEndRoom);
-        rooms.Add(Storage);
+        List<Room> rooms =
+        [
+            Bar,
+            Hallway,
+            OnPerson,
+            DarkEndRoom,
+            Storage
+        ];
 
-        List<Item> itemsInGame = new List<Item>();
-        itemsInGame.Add(Bottle);
-        itemsInGame.Add(OpenedBottle);
-        itemsInGame.Add(Corkscrew);
-        itemsInGame.Add(Table);
-        itemsInGame.Add(Chair);
-        itemsInGame.Add(Glass);
-        itemsInGame.Add(Key);
-        itemsInGame.Add(Painting);
-        itemsInGame.Add(CoatRack);
-        itemsInGame.Add(Umbrella);
-        itemsInGame.Add(Carpet);
-        itemsInGame.Add(Mirror);
-        itemsInGame.Add(Chandelier);
-        itemsInGame.Add(Lighter);
-        itemsInGame.Add(Knife);
-        itemsInGame.Add(EnergyBar);
+        List<Item> itemsInGame =
+        [
+            Bottle,
+            OpenedBottle,
+            Corkscrew,
+            Table,
+            Chair,
+            Glass,
+            Key,
+            Painting,
+            CoatRack,
+            Umbrella,
+            Carpet,
+            Mirror,
+            Chandelier,
+            Lighter,
+            Knife,
+            EnergyBar
+        ];
 
         Door DoorFromTheBar = new Door("DoorFromTheBar", "A cold looking metal door", false, Bar, false);
         Door ToTheBar =  new Door("DoorBackToTheBar", "A cold looking metal door", false, Hallway, false);
@@ -180,10 +185,13 @@ public static class FileHandler
             "You can't see much beyond the outline of the door because of the darkness. But as you feel it, it is almost as someone has carved a shallow pattern on it.",
             false, Hallway, true);
 
-        List<Door> DoorsInGameList = new List<Door>();
-        DoorsInGameList.Add(DoorFromTheBar);
-        DoorsInGameList.Add(ToTheBar);
-        DoorsInGameList.Add(MysteriousDoor);
+        List<Door> DoorsInGameList =
+        [
+            DoorFromTheBar,
+            ToTheBar,
+            MysteriousDoor
+        ];
+       
 
         foreach (Room room in rooms)
         {
